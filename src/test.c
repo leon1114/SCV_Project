@@ -1,4 +1,4 @@
-#include <stdio.h>
+/*#include <stdio.h>
 #include <wiringPi.h>
 
 #define trigPin 5
@@ -32,4 +32,4 @@ int main(void)
 	}
 	return 0;
 }
-
+*/
