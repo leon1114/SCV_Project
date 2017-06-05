@@ -21,7 +21,7 @@
  * Copyright © 2012 Georgi Todorov  <terahz@geodar.com>
  */
 
-#include <wiringpi.h>
+#include <wiringPi.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
