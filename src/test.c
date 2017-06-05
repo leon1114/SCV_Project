@@ -6,6 +6,8 @@
 
 int main(void)
 {
+	int i=0;
+	i=1;
 	if (wiringPiSetup() == -1) return 1;
 
 	pinMode(trigPin, OUTPUT);
