@@ -21,7 +21,7 @@
  * Copyright © 2012 Georgi Todorov  <terahz@geodar.com>
  */
 
-#include <wiringPi.h>
+
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -52,7 +52,6 @@ PCA9685::~PCA9685() {
 }
 //! Sets PCA9685 mode to 00
 void PCA9685::reset() {
-
 		i2c->write_byte(MODE1, 0x00); //Normal mode
 		i2c->write_byte(MODE2, 0x04); //totem pole
 
