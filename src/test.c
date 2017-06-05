@@ -29,7 +29,7 @@ int main(void)
 
 		int distance = travelTime / 58;
 
-		printf("Distance : %dcm\n", distance);
+		printf("Distance : %dcm \n", distance);
 		delay(100);
 	}
 	return 0;
