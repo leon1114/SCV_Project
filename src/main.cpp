@@ -108,7 +108,7 @@ Mat Convert_Image(Mat img_original)
 
 int main(int argc, char *argv[])
 {
-	int cnt = 0;
+	//int cnt = 0;
 #if 1
     VideoCapture cap1(argv[1]);
     cap1.set(CAP_PROP_FRAME_WIDTH, 640);
