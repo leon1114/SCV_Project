@@ -31,7 +31,7 @@
 #include <syslog.h>		/* Syslog functionality */
 #include "I2C.h"
 
-I2C::I2C(int bus, int address) {
+I2C::I2C(int bus, int address = 0x40) {
 	_i2cbus = bus;
 	_i2caddr = address;
 	snprintf(busfile, sizeof(busfile), "/dev/i2c-%d", bus);

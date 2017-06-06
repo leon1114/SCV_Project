@@ -71,34 +71,34 @@ void PCA9685::setPWMFreq(int freq) {
 
 //! PWM a single channel
 /*!
- \param led channel (1-16) to set PWM value for
+ \param led channel (1-16) to set PWM value for -> correction (0-15)
  \param value 0-4095 value for PWM
  */
-void PCA9685::setPWM(uint8_t led, int value) {
-	setPWM(led, 0, value);
+void PCA9685::setPWM(uint8_t channel, int value) {
+	setPWM(channel, 0, value);
 }
 //! PWM a single channel with custom on time
 /*!
- \param led channel (1-16) to set PWM value for
+ \param led channel (1-16) to set PWM value for -> correction (0-15)
  \param on_value 0-4095 value to turn on the pulse
  \param off_value 0-4095 value to turn off the pulse
  */
-void PCA9685::setPWM(uint8_t led, int on_value, int off_value) {
-		i2c->write_byte(LED0_ON_L + LED_MULTIPLYER * (led - 1), on_value & 0xFF);
-		i2c->write_byte(LED0_ON_H + LED_MULTIPLYER * (led - 1), on_value >> 8);
-		i2c->write_byte(LED0_OFF_L + LED_MULTIPLYER * (led - 1), off_value & 0xFF);
-		i2c->write_byte(LED0_OFF_H + LED_MULTIPLYER * (led - 1), off_value >> 8);
+void PCA9685::setPWM(uint8_t channel, int on_value, int off_value) {
+		i2c->write_byte(LED0_ON_L + LED_MULTIPLYER * channel, on_value & 0xFF);
+		i2c->write_byte(LED0_ON_H + LED_MULTIPLYER * channel, on_value >> 8);
+		i2c->write_byte(LED0_OFF_L + LED_MULTIPLYER * channel, off_value & 0xFF);
+		i2c->write_byte(LED0_OFF_H + LED_MULTIPLYER * channel, off_value >> 8);
 }
 
 //! Get current PWM value
 /*!
- \param led channel (1-16) to get PWM value from
+ \param led channel (1-16) to get PWM value from -> correction (0-15)
  */
-int PCA9685::getPWM(uint8_t led){
+int PCA9685::getPWM(uint8_t channel){
 	int ledval = 0;
-	ledval = i2c->read_byte(LED0_OFF_H + LED_MULTIPLYER * (led-1));
+	ledval = i2c->read_byte(LED0_OFF_H + LED_MULTIPLYER * channel);
 	ledval = ledval & 0xf;
 	ledval <<= 8;
-	ledval += i2c->read_byte(LED0_OFF_L + LED_MULTIPLYER * (led-1));
+	ledval += i2c->read_byte(LED0_OFF_L + LED_MULTIPLYER * channel);
 	return ledval;
 }
