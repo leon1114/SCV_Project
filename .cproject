@@ -43,6 +43,8 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.410399133" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker">
 								<option id="gnu.cpp.link.option.libs.576001437" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="WiringPi"/>
+									<listOptionValue builtIn="false" value="raspicam"/>
+									<listOptionValue builtIn="false" value="raspicam_cv"/>
 									<listOptionValue builtIn="false" value="opencv_calib3d"/>
 									<listOptionValue builtIn="false" value="opencv_core"/>
 									<listOptionValue builtIn="false" value="opencv_imgproc"/>
@@ -162,4 +164,5 @@
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

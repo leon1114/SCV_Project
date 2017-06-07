@@ -1,0 +1,1 @@
+set sysroot C:SysGCCRaspberryarm-linux-gnueabihfsysroot
