@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "motor.h"
 
-PCA9685 * pwm;
+static PCA9685 * pwm;
 unsigned int pins[] = {Motor0_A, Motor0_B, Motor1_A, Motor1_B};
 bool forward0 = true, forward1 = true, backward0 = false, backward1 = false;
 

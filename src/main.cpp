@@ -7,6 +7,7 @@
 using namespace cv; 
 using namespace std;
 #include "motor.h"
+#include "car_dir.h"
 
 int low_r = 100, log_g = 100, low_b = 20, high_r = 255, high_g = 255, high_b = 30;
 int low_threshold = 50;
@@ -111,6 +112,7 @@ int main(int argc, char *argv[])
 {
 
 	motor_test();
+	dir_test();
 	//int cnt = 0;
 
 	int i;
