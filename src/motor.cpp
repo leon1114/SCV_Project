@@ -28,6 +28,8 @@ void motor_setup(int bus, int address){
 
 	for(i=0; i<sizeof(pins); i++)
 		pinMode(pins[i], OUTPUT);
+
+	setSpeed(5);
 }
 
 void motor0(int in){
