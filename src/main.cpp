@@ -158,6 +158,8 @@ int main(int argc, char *argv[])
     }
 #endif // 0
 
+    motor_term();
+    dir_term();
     return 0;
 }
 
