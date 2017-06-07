@@ -2,7 +2,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include<raspicam/raspicam_cv.h>
+#include <raspicam/raspicam_cv.h>
 #include <stdio.h>
 
 using namespace cv; 
@@ -135,6 +135,8 @@ int main(int argc, char *argv[])
 #endif
 	motor_test();
 	dir_test();
+
+
 
 	int i;
 #if 0
