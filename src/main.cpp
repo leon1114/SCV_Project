@@ -110,7 +110,7 @@ Mat Convert_Image(Mat img_original)
 int main(int argc, char *argv[])
 {
 
-	test();
+	motor_test();
 	//int cnt = 0;
 
 	int i;
