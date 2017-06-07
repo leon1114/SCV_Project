@@ -96,10 +96,15 @@ void ctrl(int status, int dir = 1){
 
 void motor_test(){
 	motor_setup(1, 0x40);
-	ctrl(1);
-	delay(3);
-	setSpeed(10);
-	delay(3);
-	setSpeed(100);
-	ctrl(0);
+	printf("motor-started!\n");
+	while(true){
+		ctrl(1);
+		delay(3000);
+		setSpeed(10);
+		delay(3000);
+		setSpeed(100);
+		ctrl(0);
+		delay(2000);
+	}
+	printf("motor-ended!\n");
 }
