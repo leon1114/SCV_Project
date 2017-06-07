@@ -53,9 +53,10 @@ void calibrate(int dx)
 
 void dir_test()
 {
+	int i;
 	dir_setup(1,0x40);
 	printf("dir-started!\n");
-	while(true){
+	for(i=0; i<3; i++){
 		turn_left();
 		delay(1000);
 		home();
