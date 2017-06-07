@@ -2,6 +2,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include<raspicam/raspicam_cv.h>
 #include <stdio.h>
 
 using namespace cv; 
@@ -110,34 +111,27 @@ Mat Convert_Image(Mat img_original)
 
 int main(int argc, char *argv[])
 {
+	// pi camera 비디오 피드 받아오는 코드
+	raspicam::RaspiCam_Cv Camera;
+	cv::Mat image;
+
+	Camera.set(CV_CAP_PROP_FORMAT, CV_8UC3);
+	Camera.set(CV_CAP_PROP_FRAME_WIDTH, 320);
+	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, 240);
+	Camera.open();
+	// ========================================
+
+	while(1)
+	{
+		Camera.grab();
+		Camera.retrieve(image);
+		cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+
+		cv::imshow("test", image);
+		if(cv::waitKey(20) == 27) break;
+	}
 
 	motor_test();
-	//dir_test();
-	//int cnt = 0;
-
-	int i;
-
-
-#if 0
-    VideoCapture cap1(argv[1]);
-    cap1.set(CAP_PROP_FRAME_WIDTH, 640);
-    cap1.set(CAP_PROP_FRAME_HEIGHT, 480);
-
-    Mat frame1;
-    //namedWindow("converted video", 1);
-    namedWindow("original video", 1);
-
-    for (;;)
-    {
-    	//cnt++;
-    	//if (cnt % 3 != 0) continue;
-        cap1 >> frame1;
-        imshow("original video", frame1);
-        //frame1 = Convert_Image(frame1);
-        //imshow("converted video", frame1);
-        if (waitKey(30) == 27) break;
-    }
-#endif // 0
 
     return 0;
 }
