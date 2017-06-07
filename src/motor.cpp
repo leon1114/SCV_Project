@@ -29,7 +29,7 @@ void motor_setup(int bus, int address){
 	for(i=0; i<sizeof(pins); i++)
 		pinMode(pins[i], OUTPUT);
 
-	setSpeed(5);
+	setSpeed(10);
 }
 
 void motor0(int in){
@@ -95,9 +95,10 @@ void ctrl(int status, int dir = 1){
 }
 
 void motor_test(){
+	int i;
 	motor_setup(1, 0x40);
 	printf("motor-started!\n");
-	while(true){
+	for(i=0; i<3; i++){
 		ctrl(1);
 		delay(3000);
 		setSpeed(10);
