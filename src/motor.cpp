@@ -20,7 +20,8 @@ void motor_setup(int bus, int address){
 	pwm->setPWMFreq(60);
 	forward0 = true;
 	forward1 = true;
-	pwmSetMode(PWM_MODE_BAL);
+	wiringPiSetupPhys();
+	//pwmSetMode(WPI_MODE_PHYS);
 
 	backward0 = forward0==true?false:true;
 	backward1 = forward1==true?false:true;
@@ -92,13 +93,11 @@ void ctrl(int status, int dir = 1){
 }
 
 void motor_test(){
-	while(true){
-		motor_setup(1, 0x40);
-		ctrl(1);
-		delay(3);
-		setSpeed(10);
-		delay(3);
-		setSpeed(100);
-		ctrl(0);
-	}
+	motor_setup(1, 0x40);
+	ctrl(1);
+	delay(3);
+	setSpeed(10);
+	delay(3);
+	setSpeed(100);
+	ctrl(0);
 }

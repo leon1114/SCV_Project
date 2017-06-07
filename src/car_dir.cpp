@@ -53,13 +53,12 @@ void calibrate(int dx)
 
 void dir_test()
 {
-	while(true){
-		turn_left();
-		delay(1);
-		home();
-		delay(1);
-		turn_right();
-		delay(1);
-		home();
-	}
+	dir_setup(1,0x40);
+	turn_left();
+	delay(1);
+	home();
+	delay(1);
+	turn_right();
+	delay(1);
+	home();
 }

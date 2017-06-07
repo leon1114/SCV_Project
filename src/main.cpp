@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 {
 
 	motor_test();
-	dir_test();
+	//dir_test();
 	//int cnt = 0;
 
 	int i;
