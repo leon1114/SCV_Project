@@ -6,6 +6,7 @@
 #include <stdio.h>
 using namespace cv;
 using namespace std;
+#include "motor.h"
 
 int low_r = 100, log_g = 100, low_b = 20, high_r = 255, high_g = 255, high_b = 30;
 int low_threshold = 50;
@@ -108,8 +109,10 @@ Mat Convert_Image(Mat img_original)
 
 int main(int argc, char *argv[])
 {
+
+	test();
 	//int cnt = 0;
-#if 1
+#if 0
     VideoCapture cap1(argv[1]);
     cap1.set(CAP_PROP_FRAME_WIDTH, 640);
     cap1.set(CAP_PROP_FRAME_HEIGHT, 480);
