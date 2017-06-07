@@ -1,9 +1,9 @@
-
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <stdio.h>
+
 using namespace cv;
 using namespace std;
 
@@ -109,6 +109,8 @@ Mat Convert_Image(Mat img_original)
 int main(int argc, char *argv[])
 {
 	//int cnt = 0;
+	int i;
+
 #if 1
     VideoCapture cap1(argv[1]);
     cap1.set(CAP_PROP_FRAME_WIDTH, 640);
