@@ -114,6 +114,7 @@ int main(int argc, char *argv[])
 	motor_test();
 	dir_test();
 
+	int i;
 #if 0
     VideoCapture cap1(argv[1]);
     cap1.set(CAP_PROP_FRAME_WIDTH, 640);
