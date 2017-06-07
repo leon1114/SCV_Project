@@ -111,7 +111,7 @@ Mat Convert_Image(Mat img_original)
 
 int main(int argc, char *argv[])
 {
-#if 0
+#if 01
 	// pi camera 비디오 피드 받아오는 코드
 	raspicam::RaspiCam_Cv Camera;
 	cv::Mat image;
