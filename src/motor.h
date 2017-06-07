@@ -21,5 +21,6 @@ void backwardWithSpeed(int);
 void stop(void);
 void ctrl(int, int);
 void motor_test(void);
+void motor_term(void);
 
 #endif

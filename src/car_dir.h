@@ -11,5 +11,6 @@ void turn(int angle);
 void home();
 void calibrate(int dx);
 void dir_test();
+void dir_term(void);
 
 #endif
