@@ -109,7 +109,9 @@ Mat Convert_Image(Mat img_original)
 void Temp(void){
 
 	printf("test merging branch\n");
+	printf("testbranch_update\n");
 }
+
 int main(int argc, char *argv[])
 {
 	//int cnt = 0;
