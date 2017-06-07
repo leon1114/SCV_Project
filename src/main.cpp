@@ -111,6 +111,11 @@ void Temp(void){
 	printf("test merging branch\n");
 }
 
+void Testbranch2_Diff(void){
+
+	printf("testbranch2 update\n");
+}
+
 int main(int argc, char *argv[])
 {
 	//int cnt = 0;
