@@ -5,10 +5,16 @@
 #include "motor.h"
 
 static PCA9685 * pwm;
+static int currSpeed;
 unsigned int pins[] = {Motor0_A, Motor0_B, Motor1_A, Motor1_B};
 bool forward0 = true, forward1 = true, backward0 = false, backward1 = false;
 
+int getSpeed(){
+	return currSpeed;
+}
+
 void setSpeed(int speed){
+	currSpeed = speed;
 	speed *= 40;
 	pwm->setPWM(EN_M0, 0, speed);
 	pwm->setPWM(EN_M1, 0, speed);

@@ -10,6 +10,7 @@
 #define EN_M0    4 	// servo driver IC CH4
 #define EN_M1    5 	// servo driver IC CH5
 
+int getSpeed();
 void setSpeed(int);
 void motorInit(void);
 void motor0(int);
