@@ -10,8 +10,14 @@ cv::Mat imagef;
 void Init()
 {
 	cameraInit();
-	motorInit(1, 0x40);
-	dirInit(1, 0x40);
+	motorInit();
+	dirInit();
+}
+
+void Terminate()
+{
+	motorTerm();
+	dirTerm();
 }
 
 int main(int argc, char *argv[])
@@ -32,6 +38,7 @@ int main(int argc, char *argv[])
 	motorTest();
 	dirTest();
 
+	Terminate();
     return 0;
 }
 

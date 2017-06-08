@@ -14,9 +14,9 @@ void setSpeed(int speed){
 	pwm->setPWM(EN_M1, 0, speed);
 }
 
-void motorInit(int bus = 1, int address = 0x40){
+void motorInit(void){
 	unsigned int i;
-	pwm = new PCA9685(bus, address);
+	pwm = new PCA9685(1, 0x40);
 	pwm->setPWMFreq(60);
 	forward0 = true;
 	forward1 = true;

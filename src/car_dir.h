@@ -4,7 +4,7 @@
 #define CH0 0
 
 int Map(int x, int in_min, int in_max, int out_min, int out_max);
-void dirInit(int bus, int address);
+void dirInit(void);
 void turnLeft();
 void turnRight();
 void turn(int angle);
