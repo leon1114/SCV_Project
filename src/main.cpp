@@ -9,7 +9,9 @@
 
 using namespace cv;
 using namespace std;
+
 #define BASIC_SPEED 50
+#define ESC_KEY 27
 
 void Init()
 {
@@ -49,7 +51,7 @@ int main(int argc, char *argv[])
 			while(usflag);
 			forwardWithSpeed(prevSpeed);
 		}
-		if(cv::waitKey(20) == 27) break;
+		if(cv::waitKey(20) == ESC_KEY) break;
 	}
 	terminate();
     return 0;
