@@ -20,6 +20,8 @@ void Terminate()
 	dirTerm();
 }
 
+volatile int usflag;
+
 int main(int argc, char *argv[])
 {
 #if 01
@@ -30,7 +32,18 @@ int main(int argc, char *argv[])
 	while(1)
 	{
 		imagef = getFrame();
-		cv::imshow("test", imagef);
+
+
+		/******** CV analysis start ********/
+
+
+		/******** CV analysis ended ********/
+
+		if (usflag == 1){
+			int prev_speed = getSpeed();
+
+
+		}
 		if(cv::waitKey(20) == 27) break;
 	}
 
