@@ -9,7 +9,7 @@ void turnLeft();
 void turnRight();
 void turn(int angle);
 void home();
-void calibrate(int dx);
+void fineTurn(int dx);
 void dirTest();
 void dirTerm(void);
 
