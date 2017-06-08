@@ -9,8 +9,8 @@ Mat image;
 void cameraInit()
 {
 	Camera.set(CV_CAP_PROP_FORMAT, CV_8UC3);
-	Camera.set(CV_CAP_PROP_FRAME_WIDTH, 320);
-	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, 240);
+	Camera.set(CV_CAP_PROP_FRAME_WIDTH, 640);
+	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, 360);
 	Camera.open();
 }
 

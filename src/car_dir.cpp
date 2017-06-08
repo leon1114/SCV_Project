@@ -30,7 +30,7 @@ void turnLeft()
 	pwm->setPWM(CH0,0,leftPWM);
 }
 
-void turn_right()
+void turnRight()
 {
 	pwm->setPWM(CH0,0,rightPWM);
 }
@@ -61,7 +61,7 @@ void dirTest()
 		delay(1000);
 		home();
 		delay(1000);
-		turn_right();
+		turnRight();
 		delay(1000);
 		home();
 	}
