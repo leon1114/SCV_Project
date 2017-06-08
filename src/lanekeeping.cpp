@@ -11,19 +11,13 @@ Mat img;
 // setting variables
 Point pt;
 Mat gray_img;
-
-Scalar left_val;
-Scalar right_val;
-int left_lane_dist = 0;
-int right_lane_dist = 0;
-int road_ended = 0;
+Scalar left_val, right_val;
 
 void laneKeepingControl()
 {
 	pt.x = 327;
 	pt.y = 350;
-    int left_lane_dist = 0;
-    int right_lane_dist = 0;
+    int left_lane_dist = 0, right_lane_dist = 0, road_ended = 0;
     volatile int i;
 	img = getFrame();
     cvtColor(img, gray_img, COLOR_BGR2GRAY);
