@@ -22,7 +22,7 @@ void Terminate()
 
 void *US(void * param){
 	printf("ultrasonic detection part");
-	return NULL;
+	//return NULL;
 }
 volatile int usflag;
 
