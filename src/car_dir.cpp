@@ -70,5 +70,6 @@ void dirTest()
 
 void dirTerm(void)
 {
+	home();
 	delete pwm;
 }

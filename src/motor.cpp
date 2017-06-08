@@ -124,5 +124,6 @@ void motorTest(){
 
 void motorTerm(void)
 {
+	ctrl(0);
 	delete pwm;
 }
