@@ -16,7 +16,7 @@ int Map(int x, int in_min, int in_max, int out_min, int out_max)
 void dirInit()
 {
 	int offset = 0;
-	leftPWM = 400, homePWM = 450, rightPWM = 500;
+	leftPWM = 380, homePWM = 450, rightPWM = 520;
 	leftPWM += offset;
 	homePWM += offset;
 	rightPWM += offset;

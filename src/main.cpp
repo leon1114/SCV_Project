@@ -4,9 +4,12 @@
 #include "motor.h"
 #include "car_dir.h"
 #include "camera.h"
+#include "lanekeeping.h"
 #include "ultrasonic.h"
 
-cv::Mat imagef;
+using namespace cv;
+using namespace std;
+#define BASIC_SPEED 50
 
 void Init()
 {
@@ -28,25 +31,18 @@ extern volatile int usflag;
 
 int main(int argc, char *argv[])
 {
-
 	int ret;
 	pthread_t threadId;
 	const char *msgThread = "Ultrasonic detection thread";
 	void *threadRet;
 
-
 	Init();
-	// ========================================
+	forward();
 
 	ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
 	while(1)
 	{
-		imagef = getFrame();
-
-		/******** CV analysis start ********/
-
-
-		/******** CV analysis finish ********/
+		laneKeepingControl();
 
 		if (usflag == 1){
 			int prevSpeed = getSpeed();
@@ -54,20 +50,9 @@ int main(int argc, char *argv[])
 			while(usflag);
 			forwardWithSpeed(prevSpeed);
 		}
-
-		/******** Car control start********/
-
-
-		/******** Car control finish ********/
-
-
-
 		if(cv::waitKey(20) == 27) break;
 	}
-
-
-
-	Terminate();
+	terminate();
     return 0;
 }
 
