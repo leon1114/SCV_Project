@@ -4,6 +4,7 @@
 #include "motor.h"
 #include "car_dir.h"
 #include "camera.h"
+#include "ultrasonic.h"
 
 cv::Mat imagef;
 
@@ -12,19 +13,17 @@ void Init()
 	cameraInit();
 	motorInit();
 	dirInit();
+	usInit();
 }
 
 void Terminate()
 {
 	motorTerm();
 	dirTerm();
+	usTerm();
 }
 
-void *US(void * param){
-	printf("ultrasonic detection part");
-	return NULL;
-}
-volatile int usflag;
+extern volatile int usflag;
 
 int main(int argc, char *argv[])
 {
@@ -38,7 +37,7 @@ int main(int argc, char *argv[])
 	Init();
 	// ========================================
 
-	ret = pthread_create(&threadId, NULL, US, (void *)msgThread);
+	ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
 	while(1)
 	{
 		imagef = getFrame();

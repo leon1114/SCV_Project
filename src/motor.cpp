@@ -35,7 +35,7 @@ void motorInit(void){
 	for(i=0; i<sizeof(pins); i++)
 		pinMode(pins[i], OUTPUT);
 
-	setSpeed(10);
+	forwardWithSpeed(20);
 }
 
 void motor0(int in){

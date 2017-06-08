@@ -23,6 +23,7 @@ void dirInit()
 
 	pwm = new PCA9685(1, 0x40);
 	pwm->setPWMFreq(60);
+	home();
 }
 
 void turnLeft()
@@ -46,7 +47,8 @@ void home()
 	pwm->setPWM(CH0,0,homePWM);
 }
 
-void calibrate(int dx)
+//
+void fineTurn(int dx)
 {
 	pwm->setPWM(CH0,0,450+dx);
 }
