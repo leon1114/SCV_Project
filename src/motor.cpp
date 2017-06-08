@@ -5,18 +5,24 @@
 #include "motor.h"
 
 static PCA9685 * pwm;
+static int currSpeed;
 unsigned int pins[] = {Motor0_A, Motor0_B, Motor1_A, Motor1_B};
 bool forward0 = true, forward1 = true, backward0 = false, backward1 = false;
 
+int getSpeed(){
+	return currSpeed;
+}
+
 void setSpeed(int speed){
+	currSpeed = speed;
 	speed *= 40;
 	pwm->setPWM(EN_M0, 0, speed);
 	pwm->setPWM(EN_M1, 0, speed);
 }
 
-void motorInit(int bus = 1, int address = 0x40){
+void motorInit(void){
 	unsigned int i;
-	pwm = new PCA9685(bus, address);
+	pwm = new PCA9685(1, 0x40);
 	pwm->setPWMFreq(60);
 	forward0 = true;
 	forward1 = true;
@@ -82,6 +88,12 @@ void stop(){
 }
 
 void ctrl(int status, int dir = 1){
+	/*
+	 * status 1: driving mode
+	 * 		dir 1: forward else: backward
+	 * status 0: parking mode
+	 */
+
 	if(status == 1){
 		if(dir == 1)
 			forward();
@@ -112,5 +124,6 @@ void motorTest(){
 
 void motorTerm(void)
 {
+	ctrl(0);
 	delete pwm;
 }

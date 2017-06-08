@@ -13,7 +13,7 @@ int Map(int x, int in_min, int in_max, int out_min, int out_max)
 	return (x-in_min) * (out_max-out_min) / (in_max-in_min) + out_min;
 }
 
-void dirInit(int bus = 1, int address = 0x40)
+void dirInit()
 {
 	int offset = 0;
 	leftPWM = 400, homePWM = 450, rightPWM = 500;
@@ -21,7 +21,7 @@ void dirInit(int bus = 1, int address = 0x40)
 	homePWM += offset;
 	rightPWM += offset;
 
-	pwm = new PCA9685(bus, address);
+	pwm = new PCA9685(1, 0x40);
 	pwm->setPWMFreq(60);
 }
 
@@ -70,5 +70,6 @@ void dirTest()
 
 void dirTerm(void)
 {
+	home();
 	delete pwm;
 }

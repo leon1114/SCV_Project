@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-
+#include <pthread.h>
 #include "motor.h"
 #include "car_dir.h"
 #include "camera.h"
@@ -27,21 +27,40 @@ void Init()
 	pt.y = 350;
 
 	cameraInit();
-	motorInit(1, 0x40);
-	dirInit(1, 0x40);
+	motorInit();
+	dirInit();
 }
+
+void Terminate()
+{
+	motorTerm();
+	dirTerm();
+}
+
+void *US(void * param){
+	printf("ultrasonic detection part");
+	return NULL;
+}
+volatile int usflag;
 
 int main(int argc, char *argv[])
 {
-#if 01
-	// pi camera 비디오 피드 받아오는 코드
+
+	int ret;
+	pthread_t threadId;
+	const char *msgThread = "Ultrasonic detection thread";
+	void *threadRet;
+
+
 	Init();
 	forward();
 	// ========================================
 	printf("lane test INIT\n");
 
+	//ret = pthread_create(&threadId, NULL, US, (void *)msgThread);
 	while(1)
 	{
+
         int left_lane_dist = 0;
         int right_lane_dist = 0;
         volatile int i;
@@ -73,12 +92,12 @@ int main(int argc, char *argv[])
         else if (left_lane_dist)
         {
         	turnRight();
-        	setSpeed(20);
+        	setSpeed(25);
         }
         else if (right_lane_dist)
         {
         	turnLeft();
-        	setSpeed(20);
+        	setSpeed(25);
         }
         else
         {
@@ -93,14 +112,30 @@ int main(int argc, char *argv[])
         if (right_lane_dist) circle(img, Point(pt.x + right_lane_dist, 350), 10, Scalar(0,0,255),-1,8);
 
 		imshow("test", img);
+
+		/******** CV analysis start ********/
+
+
+		/******** CV analysis finish ********/
+
+//		if (usflag == 1){
+//			int prevSpeed = getSpeed();
+//			stop();
+//			while(usflag);
+//			forwardWithSpeed(prevSpeed);
+//		}
+
+		/******** Car control start********/
+
+
+		/******** Car control finish ********/
+
 		if(cv::waitKey(20) == 27) break;
 	}
 
-#endif
 
-	motorTerm();
-	dirTerm();
 
+	Terminate();
     return 0;
 }
 
