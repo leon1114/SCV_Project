@@ -88,6 +88,12 @@ void stop(){
 }
 
 void ctrl(int status, int dir = 1){
+	/*
+	 * status 1: driving mode
+	 * 		dir 1: forward else: backward
+	 * status 0: parking mode
+	 */
+
 	if(status == 1){
 		if(dir == 1)
 			forward();
