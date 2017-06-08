@@ -14,7 +14,7 @@ void setSpeed(int speed){
 	pwm->setPWM(EN_M1, 0, speed);
 }
 
-void motor_setup(int bus = 1, int address = 0x40){
+void motorInit(int bus = 1, int address = 0x40){
 	unsigned int i;
 	pwm = new PCA9685(bus, address);
 	pwm->setPWMFreq(60);
@@ -94,9 +94,9 @@ void ctrl(int status, int dir = 1){
 		printf("Argument error! status must be 0 or 1\n");
 }
 
-void motor_test(){
+void motorTest(){
 	int i;
-	motor_setup();
+	motorInit();
 	printf("motor-started!\n");
 	for(i=0; i<3; i++){
 		ctrl(1);
@@ -110,7 +110,7 @@ void motor_test(){
 	printf("motor-ended!\n");
 }
 
-void motor_term(void)
+void motorTerm(void)
 {
 	delete pwm;
 }

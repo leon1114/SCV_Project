@@ -4,7 +4,7 @@
 #define ECHO 16	//input
 #define TRIG 18	//output
 
-void setup();
+void usInit();
 int getCM();
 
 #endif

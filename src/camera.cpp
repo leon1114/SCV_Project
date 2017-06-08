@@ -6,7 +6,7 @@ using namespace std;
 raspicam::RaspiCam_Cv Camera;
 Mat image;
 
-void Camera_Init()
+void cameraInit()
 {
 	Camera.set(CV_CAP_PROP_FORMAT, CV_8UC3);
 	Camera.set(CV_CAP_PROP_FRAME_WIDTH, 320);
@@ -14,7 +14,7 @@ void Camera_Init()
 	Camera.open();
 }
 
-Mat Get_Frame()
+Mat getFrame()
 {
 	Camera.grab();
 	Camera.retrieve(image);

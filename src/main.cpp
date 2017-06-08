@@ -7,23 +7,30 @@
 
 cv::Mat imagef;
 
+void Init()
+{
+	cameraInit();
+	motorInit(1, 0x40);
+	dirInit(1, 0x40);
+}
+
 int main(int argc, char *argv[])
 {
 #if 01
 	// pi camera 비디오 피드 받아오는 코드
-	Camera_Init();
+	Init();
 	// ========================================
 
 	while(1)
 	{
-		imagef = Get_Frame();
+		imagef = getFrame();
 		cv::imshow("test", imagef);
 		if(cv::waitKey(20) == 27) break;
 	}
 
 #endif
-	motor_test();
-	dir_test();
+	motorTest();
+	dirTest();
 
     return 0;
 }

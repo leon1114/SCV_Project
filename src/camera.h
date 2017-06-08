@@ -6,7 +6,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <raspicam/raspicam_cv.h>
 
-void Camera_Init();
-cv::Mat Get_Frame();
+void cameraInit();
+cv::Mat getFrame();
 
 #endif

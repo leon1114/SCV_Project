@@ -3,7 +3,7 @@
 #include <wiringPi.h>
 #include "ultrasonic.h"
 
-void setup() {
+void usInit() {
         wiringPiSetup();
         pinMode(TRIG, OUTPUT);
         pinMode(ECHO, INPUT);

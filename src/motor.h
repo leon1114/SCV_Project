@@ -11,7 +11,7 @@
 #define EN_M1    5 	// servo driver IC CH5
 
 void setSpeed(int);
-void motor_setup(int, int);
+void motorInit(int, int);
 void motor0(int);
 void motor1(int);
 void forward();
@@ -20,7 +20,7 @@ void forwardWithSpeed(int);
 void backwardWithSpeed(int);
 void stop(void);
 void ctrl(int, int);
-void motor_test(void);
-void motor_term(void);
+void motorTest(void);
+void motorTerm(void);
 
 #endif

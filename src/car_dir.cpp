@@ -13,7 +13,7 @@ int Map(int x, int in_min, int in_max, int out_min, int out_max)
 	return (x-in_min) * (out_max-out_min) / (in_max-in_min) + out_min;
 }
 
-void dir_setup(int bus = 1, int address = 0x40)
+void dirInit(int bus = 1, int address = 0x40)
 {
 	int offset = 0;
 	leftPWM = 400, homePWM = 450, rightPWM = 500;
@@ -25,7 +25,7 @@ void dir_setup(int bus = 1, int address = 0x40)
 	pwm->setPWMFreq(60);
 }
 
-void turn_left()
+void turnLeft()
 {
 	pwm->setPWM(CH0,0,leftPWM);
 }
@@ -51,13 +51,13 @@ void calibrate(int dx)
 	pwm->setPWM(CH0,0,450+dx);
 }
 
-void dir_test()
+void dirTest()
 {
 	int i;
-	dir_setup();
+	dirInit();
 	printf("dir-started!\n");
 	for(i=0; i<3; i++){
-		turn_left();
+		turnLeft();
 		delay(1000);
 		home();
 		delay(1000);
@@ -68,7 +68,7 @@ void dir_test()
 	printf("dir-ended!\n");
 }
 
-void dir_term(void)
+void dirTerm(void)
 {
 	delete pwm;
 }
