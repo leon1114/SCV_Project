@@ -9,7 +9,6 @@
 
 using namespace cv;
 using namespace std;
-#define BASIC_SPEED 50
 
 void Init()
 {
@@ -17,6 +16,7 @@ void Init()
 	motorInit();
 	dirInit();
 	usInit();
+	videoCaptureInit();
 }
 
 void Terminate()
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	Init();
 	forward();
 
-	ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
+	//ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
 	while(1)
 	{
 		laneKeepingControl();
