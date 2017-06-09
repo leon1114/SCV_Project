@@ -21,4 +21,3 @@ Mat getFrame()
 	cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
 	return image;
 }
-
