@@ -9,21 +9,22 @@ using namespace cv;
 Mat img;
 
 // setting variables
-Point pt = Point(INITIAL_X, INITIAL_Y-30);
+Point pt = Point(INITIAL_X, INITIAL_Y-50);
 Mat gray_img;
 Scalar left_val, right_val;
 VideoWriter writer;
+int width=450, turndx;
 
 void videoCaptureInit()
 {
-    writer.open("./record.avi", CV_FOURCC('M', 'J', 'P', 'G'), 15.0, Size(640, 360), 1);
+    writer.open("./record.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10.0, Size(640, 360), 1);
 }
 
 void laneKeepingControl()
 {
     int left_lane_cord = CORD_NOT_SET, right_lane_cord = CORD_NOT_SET, road_ended = 0;
     volatile int i;
-    pt.y = INITIAL_Y - getSpeed()/2;
+    pt.y = INITIAL_Y - (int)(getSpeed()) -30;
 	img = getFrame();
     cvtColor(img, gray_img, COLOR_BGR2GRAY);
     inRange(gray_img,150,255,gray_img);
@@ -40,24 +41,27 @@ void laneKeepingControl()
          {
              right_lane_cord = pt.x + i;
          }
+         if(left_lane_cord!=CORD_NOT_SET && right_lane_cord!=CORD_NOT_SET) break;
      }
 
     printf("PT.X : %d , Left lane x cord : %d, Right lane x cord : %d\n", pt.x, left_lane_cord, right_lane_cord);
 
     if (left_lane_cord != CORD_NOT_SET && right_lane_cord != CORD_NOT_SET)
     {
-    	fineTurn(pt.x - INITIAL_X);
-    	setSpeed(BASIC_SPEED);
+    	fineTurn((pt.x - INITIAL_X)/5);
+    	//width = right_lane_cord - left_lane_cord;
     }
     else if (left_lane_cord != CORD_NOT_SET)
     {
-    	turnRight();
-    	setSpeed(TURN_SPEED);
+    	//turn right
+    	turndx = (int)(((2*left_lane_cord+width)/2 - INITIAL_X)/3)>90?90:(int)(((2*left_lane_cord+width)/2 - INITIAL_X)/3);
+    	fineTurn(turndx);
     }
     else if (right_lane_cord != CORD_NOT_SET)
     {
-    	turnLeft();
-    	setSpeed(TURN_SPEED);
+    	//turn left
+    	turndx = (int)(((2*right_lane_cord-width)/2 - INITIAL_X)/3)<-90?-90:(int)(((2*right_lane_cord-width)/2 - INITIAL_X)/3);
+    	fineTurn(turndx);
     }
     else
     {
@@ -67,9 +71,8 @@ void laneKeepingControl()
     	printf("ended\n");
     }
 
-
-    if (left_lane_cord != CORD_NOT_SET) circle(img, Point(left_lane_cord, 350), 10, Scalar(0,0,255),-1,8);
-    if (right_lane_cord != CORD_NOT_SET) circle(img, Point(right_lane_cord, 350), 10, Scalar(0,0,255),-1,8);
+    if (left_lane_cord != CORD_NOT_SET) circle(img, Point(left_lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
+    if (right_lane_cord != CORD_NOT_SET) circle(img, Point(right_lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
 
     if (left_lane_cord == CORD_NOT_SET) left_lane_cord = 0;
     if (right_lane_cord == CORD_NOT_SET) right_lane_cord = 640;

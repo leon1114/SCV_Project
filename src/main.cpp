@@ -9,7 +9,7 @@
 
 using namespace cv;
 using namespace std;
-#define BASIC_SPEED 50
+#define BASIC_SPEED 100
 #define ESC_KEY 27
 
 
