@@ -11,6 +11,7 @@ void *ultrasonicDetection(void * param){
 	while(true){
 		dist = getCM();
 		if(usflag==0&&dist<=10){
+			/*** 이미지 분석하는 코드 필요 ***/
 			usflag=1;
 		}
 		else if(usflag&&dist>10){

@@ -9,6 +9,9 @@
 
 using namespace cv;
 using namespace std;
+#define BASIC_SPEED 50
+#define ESC_KEY 27
+
 
 void Init()
 {
@@ -26,6 +29,7 @@ void Terminate()
 	usTerm();
 }
 
+
 extern volatile int usflag;
 
 int main(int argc, char *argv[])
@@ -38,7 +42,7 @@ int main(int argc, char *argv[])
 	Init();
 	forward();
 
-	//ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
+	ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
 	while(1)
 	{
 		laneKeepingControl();
@@ -49,9 +53,9 @@ int main(int argc, char *argv[])
 			while(usflag);
 			forwardWithSpeed(prevSpeed);
 		}
-		if(cv::waitKey(20) == 27) break;
+		if(cv::waitKey(20) == ESC_KEY) break;
 	}
-
+	terminate();
     return 0;
 }
 
