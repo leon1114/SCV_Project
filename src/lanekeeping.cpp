@@ -6,6 +6,8 @@
 using namespace std;
 using namespace cv;
 
+#define Y_MAX 360
+
 Mat img;
 
 // setting variables
@@ -16,7 +18,7 @@ Scalar left_val, right_val;
 void laneKeepingControl()
 {
 	pt.x = 327;
-	pt.y = 350;
+	pt.y = Y_MAX - getSpeed()/2;
     int left_lane_dist = 0, right_lane_dist = 0, road_ended = 0;
     volatile int i;
 	img = getFrame();
@@ -57,15 +59,17 @@ void laneKeepingControl()
     */
     if (left_lane_dist && right_lane_dist)
     {
-    	fineTurn(right_lane_dist - left_lane_dist);
+    	home();
     }
     else if (left_lane_dist)
 	{
-		turnRight();
+    	if (left_lane_dist < 270) left_lane_dist=270;
+		fineTurn(350-left_lane_dist);
 	}
 	else if (right_lane_dist)
 	{
-		turnLeft();
+		if (right_lane_dist < 270) right_lane_dist=270;
+		fineTurn(right_lane_dist-350);
 	}
     else
     {

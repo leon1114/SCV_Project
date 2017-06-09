@@ -39,8 +39,7 @@ int main(int argc, char *argv[])
 	void *threadRet;
 
 	Init();
-	forward();
-	setSpeed(80);
+	forwardWithSpeed(BASIC_SPEED);
 
 	ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
 	while(1)
