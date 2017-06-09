@@ -9,9 +9,9 @@
 
 using namespace cv;
 using namespace std;
-
 #define BASIC_SPEED 50
 #define ESC_KEY 27
+
 
 void Init()
 {
@@ -19,6 +19,7 @@ void Init()
 	motorInit();
 	dirInit();
 	usInit();
+	videoCaptureInit();
 }
 
 void Terminate()
