@@ -38,7 +38,7 @@ void laneKeepingControl()
      }
 
     printf("Dist to left lane : %d, Dist to right lane : %d\n", left_lane_dist, right_lane_dist);
-
+/*
     if (left_lane_dist && right_lane_dist)
     {
     	home();
@@ -54,6 +54,19 @@ void laneKeepingControl()
     	turnLeft();
     	setSpeed(BASIC_SPEED);
     }
+    */
+    if (left_lane_dist && right_lane_dist)
+    {
+    	fineTurn(right_lane_dist - left_lane_dist);
+    }
+    else if (left_lane_dist)
+	{
+		turnRight();
+	}
+	else if (right_lane_dist)
+	{
+		turnLeft();
+	}
     else
     {
     	road_ended = 1;

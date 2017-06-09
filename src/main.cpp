@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
 
 	Init();
 	forward();
+	setSpeed(80);
 
 	ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
 	while(1)
