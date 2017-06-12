@@ -18,7 +18,7 @@ Mat Get_Frame()
 {
 	Camera.grab();
 	Camera.retrieve(image);
-	cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+	//cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
 	return image;
 }
 
