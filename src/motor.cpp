@@ -91,7 +91,6 @@ void ctrl(int status, int dir = 1){
 	 * 		dir 1: forward else: backward
 	 * status 0: parking mode
 	 */
-
 	if(status == 1){
 		if(dir == 1)
 			forward();

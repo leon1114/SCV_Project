@@ -43,7 +43,7 @@ int laneKeepingControl()
     {
     	printf("Stop line detected\n");
     	int prv_spd = getSpeed();
-    	for (int spd = prv_spd;; spd -= 30)
+    	for (int spd = prv_spd;; spd -= prv_spd *0.9)
     	{
     		if (spd <= 0)
     		{
