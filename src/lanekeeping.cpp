@@ -19,6 +19,7 @@ Mat gray_img;
 Scalar left_val, right_val;
 VideoWriter writer;
 int width=450, turndx;
+int isOnCorner;
 
 #ifdef RECORD
 void videoCaptureInit()
@@ -34,10 +35,11 @@ int laneKeepingControl()
 	pt.y = INITIAL_Y - getSpeed();
 	img = getFrame();
 	cvtColor(img, gray_img, COLOR_BGR2GRAY);
-	inRange(gray_img,100,255,gray_img);
+	//inRange(gray_img,150,255,gray_img);
+	threshold(gray_img, gray_img, 150,255, THRESH_BINARY|THRESH_OTSU);
 
 	//Stop line detect && stop
-    if (gray_img.at<uchar>(pt.y, pt.x) != 0)
+    if (!isOnCorner && gray_img.at<uchar>(pt.y, pt.x) != 0)
     {
     	printf("Stop line detected\n");
     	int prv_spd = getSpeed();
@@ -77,6 +79,7 @@ int laneKeepingControl()
 	if (left_lane_cord != CORD_NOT_SET && right_lane_cord != CORD_NOT_SET)
 	{
 		fineTurn((pt.x - INITIAL_X)/5);
+		isOnCorner = 0;
 		//width = right_lane_cord - left_lane_cord;
 	}
 	//turn right
@@ -84,12 +87,14 @@ int laneKeepingControl()
 	{
 		turndx = (int)(((2*left_lane_cord+width)/2 - INITIAL_X)/3)>90?90:(int)(((2*left_lane_cord+width)/2 - INITIAL_X)/3);
 		fineTurn(turndx);
+		isOnCorner = 1;
 	}
 	//turn left
 	else if (right_lane_cord != CORD_NOT_SET)
 	{
 		turndx = (int)(((2*right_lane_cord-width)/2 - INITIAL_X)/3)<-90?-90:(int)(((2*right_lane_cord-width)/2 - INITIAL_X)/3);
 		fineTurn(turndx);
+		isOnCorner = 1;
 	}
 	//lane end
 	else
@@ -114,7 +119,7 @@ int laneKeepingControl()
 #ifdef RECORD
 	writer.write(img);
 #endif
-	//imshow("test", img);
+	imshow("test", img);
 
 	//No lane detected
 	if (road_ended)
