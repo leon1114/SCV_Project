@@ -18,7 +18,7 @@
  * Version     :
  * Created on  : Dec 9, 2012
  *
- * Copyright © 2012 Georgi Todorov  <terahz@geodar.com>
+ * Copyright @ 2012 Georgi Todorov  <terahz@geodar.com>
  */
 
 #ifndef _PCA9685_H

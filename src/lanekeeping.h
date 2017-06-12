@@ -6,6 +6,6 @@
 #define INITIAL_Y 360
 
 void videoCaptureInit(void);
-void laneKeepingControl(void);
+int laneKeepingControl(void);
 
 #endif

@@ -11,6 +11,7 @@ using namespace cv;
 using namespace std;
 #define BASIC_SPEED 100
 #define ESC_KEY 27
+#define LK_END 1
 
 
 void Init()
@@ -43,10 +44,10 @@ int main(int argc, char *argv[])
 	forwardWithSpeed(BASIC_SPEED);
 
 	ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
-	while(1)
+	while(true)
 	{
-		laneKeepingControl();
-
+		ret = laneKeepingControl();
+		if(ret == LK_END) break;
 		if (usflag == 1){
 			int prevSpeed = getSpeed();
 			stop();
