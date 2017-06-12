@@ -7,6 +7,7 @@
 #include "wiringPi.h"
 
 #define RECORD
+#define SHOW_CAMERA_VISION
 
 using namespace std;
 using namespace cv;
@@ -36,10 +37,10 @@ int laneKeepingControl()
 	img = getFrame();
 	cvtColor(img, gray_img, COLOR_BGR2GRAY);
 	//inRange(gray_img,150,255,gray_img);
-	threshold(gray_img, gray_img, 150,255, THRESH_BINARY|THRESH_OTSU);
+	threshold(gray_img, gray_img, 127,255, THRESH_BINARY|THRESH_OTSU);
 
 	//Stop line detect && stop
-    if (!isOnCorner && gray_img.at<uchar>(pt.y, pt.x) != 0)
+    if (!isOnCorner && gray_img.at<uchar>(pt.y - 30, pt.x) != 0)
     {
     	printf("Stop line detected\n");
     	int prv_spd = getSpeed();
@@ -106,8 +107,11 @@ int laneKeepingControl()
 	}
 
 	//Draw circles inside of each lane
+#ifdef SHOW_CAMERA_VISION
 	if (left_lane_cord != CORD_NOT_SET) circle(img, Point(left_lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
 	if (right_lane_cord != CORD_NOT_SET) circle(img, Point(right_lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
+	imshow("test", img);
+#endif
 
 	//Init l-r lane cord
 	if (left_lane_cord == CORD_NOT_SET) left_lane_cord = 0;
@@ -119,7 +123,6 @@ int laneKeepingControl()
 #ifdef RECORD
 	writer.write(img);
 #endif
-	imshow("test", img);
 
 	//No lane detected
 	if (road_ended)
