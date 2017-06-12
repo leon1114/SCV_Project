@@ -12,19 +12,16 @@ volatile int usflag=0;
 extern Mat img;
 
 void *ultrasonicDetection(void * param){
-	int dist, prevDist=-1;
+	int dist;
 	printf("ultrasonic detection part");
 	while(true){
 		dist = getCM();
-		printf("usflag = %d / dist = %d\n", usflag, dist);
 		//AEB
 		if(usflag==0&&dist<=20){
-			printf("us to 1\n");
 			usflag=1;
 		}
 		//Switch to normal driving
 		else if(usflag&&dist>20){
-			printf("us to 0\n");
 			usflag=0;
 		}
 		delay(100);
