@@ -2,6 +2,7 @@
 #include "camera.h"
 #include "motor.h"
 #include "car_dir.h"
+#include "wiringPi.h"
 
 using namespace std;
 using namespace cv;
@@ -28,6 +29,24 @@ void laneKeepingControl()
 	img = getFrame();
     cvtColor(img, gray_img, COLOR_BGR2GRAY);
     inRange(gray_img,150,255,gray_img);
+
+    if (gray_img.at<uchar>(pt.y, pt.x) != 0)
+    {
+    	printf("Stop line detected\n");
+    	int prv_spd = getSpeed();
+    	for (int spd = prv_spd;; spd -= 30)
+    	{
+    		if (spd <= 0)
+    		{
+    			setSpeed(0);
+    			delay(2000);
+    			setSpeed(prv_spd);
+    			break;
+    		}
+    		setSpeed(spd);
+    		delay(1);
+    	}
+    }
 
     for (i=1;i<=640;i++)
      {
