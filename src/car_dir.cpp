@@ -73,5 +73,6 @@ void dirTest()
 void dirTerm(void)
 {
 	home();
+	pwm->setPWM(CH0, 0, 0); //servo moter power off
 	delete pwm;
 }

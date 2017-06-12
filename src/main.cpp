@@ -10,7 +10,7 @@
 
 using namespace cv;
 using namespace std;
-#define BASIC_SPEED 100
+#define BASIC_SPEED 60
 #define ESC_KEY 27
 #define LK_END 1
 
@@ -58,6 +58,8 @@ int main(int argc, char *argv[])
 		}
 		if(cv::waitKey(20) == ESC_KEY) break;
 	}
+
+	printf("Terminate\n");
 	terminate();
     return 0;
 }
