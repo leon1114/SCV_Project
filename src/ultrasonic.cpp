@@ -16,22 +16,18 @@ void *ultrasonicDetection(void * param){
 	printf("ultrasonic detection part");
 	while(true){
 		dist = getCM();
-//		if(prevDist==-1) prevDist = dist;
-//		else {
-//			if(prevDist - dist <=30 && prevDist - dist >=-30){
-//
-//			}
-//		}
 		printf("usflag = %d / dist = %d\n", usflag, dist);
 		//AEB
 		if(usflag==0&&dist<=20){
-
+			printf("us to 1\n");
 			usflag=1;
 		}
 		//Switch to normal driving
 		else if(usflag&&dist>20){
+			printf("us to 0\n");
 			usflag=0;
 		}
+		delay(100);
 	}
 	return NULL;
 }
@@ -67,6 +63,5 @@ int getCM() {
 }
 
 void usTerm() {
-	//TRIG pin must start LOW
 	digitalWrite(TRIG, LOW);
 }

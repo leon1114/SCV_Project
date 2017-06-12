@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "lanekeeping.h"
 #include "ultrasonic.h"
+#include "wiringPi.h"
 
 using namespace cv;
 using namespace std;
@@ -35,6 +36,7 @@ extern volatile int usflag;
 
 int main(int argc, char *argv[])
 {
+
 	int ret;
 	pthread_t threadId;
 	const char *msgThread = "Ultrasonic detection thread";
