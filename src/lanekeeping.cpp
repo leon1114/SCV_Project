@@ -31,10 +31,10 @@ int laneKeepingControl()
 {
 	int left_lane_cord = CORD_NOT_SET, right_lane_cord = CORD_NOT_SET, road_ended = 0;
 	volatile int i;
-	pt.y = INITIAL_Y - getSpeed() - 30;
+	pt.y = INITIAL_Y - getSpeed();
 	img = getFrame();
 	cvtColor(img, gray_img, COLOR_BGR2GRAY);
-	inRange(gray_img,150,255,gray_img);
+	inRange(gray_img,100,255,gray_img);
 
 	//Stop line detect && stop
     if (gray_img.at<uchar>(pt.y, pt.x) != 0)
@@ -114,7 +114,7 @@ int laneKeepingControl()
 #ifdef RECORD
 	writer.write(img);
 #endif
-	imshow("test", img);
+	//imshow("test", img);
 
 	//No lane detected
 	if (road_ended)
