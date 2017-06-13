@@ -43,17 +43,9 @@ int main(int argc, char *argv[])
 	int ret;
 	pthread_t threadId;
 	const char *msgThread = "Ultrasonic detection thread";
-	void *threadRet;
+//	void *threadRet;
 
 	Init();
-//	seeHome();
-//	delay(1000);
-//	seeLeft(45);
-//	delay(1000);
-//	seeRight(45);
-//	delay(1000);
-//	seeHome();
-//	delay(1000);
 	forwardWithSpeed(BASIC_SPEED);
 
 	ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);

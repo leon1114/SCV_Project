@@ -24,6 +24,16 @@ void seeRight(int angle){
 	pwm->setPWM(CH14, 0, HOME_PULSE - (int)(angle/90.0*MAX_DIFF));
 }
 
+void usTest(void){
+	seeHome();
+	delay(1000);
+	seeLeft(45);
+	delay(1000);
+	seeRight(45);
+	delay(1000);
+	seeHome();
+	delay(1000);
+}
 void usdirTerm(void)
 {
 	seeHome();

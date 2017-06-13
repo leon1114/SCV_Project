@@ -13,20 +13,17 @@ volatile int usflag=0;
 
 void *ultrasonicDetection(void * param){
 	int dist;
-	printf("ultrasonic detection part\n");
-	for(;;){
+	printf("US detection thread has been created\n");
+	while(true){
 		dist = getCM();
-		printf("dist = %d\n", dist);
 		//AEB
 		if(usflag==0&&dist<=25)
 		{
-			printf("usflag on\n");
 			usflag=1;
 		}
 		//Switch to normal driving
 		else if(usflag&&dist>25)
 		{
-			printf("usflag off\n");
 			usflag=0;
 		}
 		delay(100);
@@ -35,7 +32,7 @@ void *ultrasonicDetection(void * param){
 }
 
 void usInit() {
-//	wiringPiSetup();
+
 	pinMode(TRIG, OUTPUT);
 	pinMode(ECHO, INPUT);
 
