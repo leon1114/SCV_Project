@@ -120,5 +120,7 @@ void motorTest(){
 void motorTerm(void)
 {
 	ctrl(0);
+	pwm->setPWM(EN_M0, 0, 0);
+	pwm->setPWM(EN_M1, 0, 0);
 	delete pwm;
 }
