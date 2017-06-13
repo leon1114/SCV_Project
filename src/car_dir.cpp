@@ -4,8 +4,6 @@
 #include "car_dir.h"
 #include "PCA9685.h"
 
-#define HOMEVAL 900
-
 int leftPWM, rightPWM, homePWM;
 static PCA9685 * pwm;
 
