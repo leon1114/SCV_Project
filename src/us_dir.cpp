@@ -2,12 +2,12 @@
 
 #include <wiringPi.h>
 #include <stdio.h>
+#include "PCA9685.h"
 #include "us_dir.h"
 
 static PCA9685 * pwm;
 
 void usdirInit(void){
-	unsigned int i;
 	pwm = new PCA9685(1, 0x40);
 	pwm->setPWMFreq(120);
 }
@@ -26,7 +26,7 @@ void seeRight(int angle){
 
 void usdirTerm(void)
 {
-	home();
+	seeHome();
 	pwm->setPWM(CH14, 0, 0); //servo moter power off
 	delete pwm;
 }
