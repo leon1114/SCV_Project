@@ -26,7 +26,6 @@ void motorInit(void){
 	pwm->setPWMFreq(90);
 	forward0 = true;
 	forward1 = true;
-//	wiringPiSetup();
 
 	backward0 = forward0==true?false:true;
 	backward1 = forward1==true?false:true;
@@ -119,7 +118,7 @@ void motorTest(){
 
 void motorTerm(void)
 {
-	ctrl(0);
+	stop();
 	pwm->setPWM(EN_M0, 0, 0);
 	pwm->setPWM(EN_M1, 0, 0);
 	delete pwm;
