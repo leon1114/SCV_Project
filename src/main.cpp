@@ -8,6 +8,7 @@
 #include "ultrasonic.h"
 #include "wiringPi.h"
 #include "us_dir.h"
+#include "obstacle_avoidance.h"
 
 using namespace cv;
 using namespace std;
@@ -68,9 +69,13 @@ int main(int argc, char *argv[])
 		if(ret == LK_END) break;
 		if (usflag == 1){
 			int prevSpeed = getSpeed();
-			setSpeed(0);
-			while(usflag);
-			forwardWithSpeed(prevSpeed);
+			stop();
+			laneDeparture(1);
+			laneReturn(1);
+			usflag = 0;
+			setSpeed(prevSpeed);
+//			while(usflag);
+//			forwardWithSpeed(prevSpeed);
 		}
 		if(cv::waitKey(20) == ESC_KEY) break;
 	}
