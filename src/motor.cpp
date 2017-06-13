@@ -23,11 +23,10 @@ void setSpeed(int speed){
 void motorInit(void){
 	unsigned int i;
 	pwm = new PCA9685(1, 0x40);
-	pwm->setPWMFreq(60);
+	pwm->setPWMFreq(120);
 	forward0 = true;
 	forward1 = true;
 	wiringPiSetupPhys();
-	//pwmSetMode(WPI_MODE_PHYS);
 
 	backward0 = forward0==true?false:true;
 	backward1 = forward1==true?false:true;
@@ -86,8 +85,7 @@ void stop(){
 }
 
 void ctrl(int status, int dir = 1){
-	/*
-	 * status 1: driving mode
+	/* status 1: driving mode
 	 * 		dir 1: forward else: backward
 	 * status 0: parking mode
 	 */

@@ -4,6 +4,7 @@
 #include "car_dir.h"
 #include "PCA9685.h"
 
+#define HOMEVAL 900
 
 int leftPWM, rightPWM, homePWM;
 static PCA9685 * pwm;
@@ -16,30 +17,12 @@ int Map(int x, int in_min, int in_max, int out_min, int out_max)
 void dirInit()
 {
 	int offset = 0;
-	leftPWM = 380, homePWM = 450, rightPWM = 520;
-	leftPWM += offset;
+	homePWM = HOMEVAL;
 	homePWM += offset;
-	rightPWM += offset;
 
 	pwm = new PCA9685(1, 0x40);
-	pwm->setPWMFreq(60);
+	pwm->setPWMFreq(120);
 	home();
-}
-
-void turnLeft()
-{
-	pwm->setPWM(CH0,0,leftPWM);
-}
-
-void turnRight()
-{
-	pwm->setPWM(CH0,0,rightPWM);
-}
-
-void turn(int angle)
-{
-	angle = Map(angle, 0, 255, leftPWM, rightPWM);
-	pwm->setPWM(CH0,0,angle);
 }
 
 void home()
@@ -47,10 +30,9 @@ void home()
 	pwm->setPWM(CH0,0,homePWM);
 }
 
-//
 void fineTurn(int dx)
 {
-	pwm->setPWM(CH0,0,450+dx);
+	pwm->setPWM(CH0,0,HOMEVAL+dx);
 }
 
 void dirTest()
@@ -59,11 +41,9 @@ void dirTest()
 	dirInit();
 	printf("dir-started!\n");
 	for(i=0; i<3; i++){
-		turnLeft();
 		delay(1000);
 		home();
 		delay(1000);
-		turnRight();
 		delay(1000);
 		home();
 	}
