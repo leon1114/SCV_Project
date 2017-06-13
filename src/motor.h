@@ -2,10 +2,10 @@
 #define _MOTOR_H
 #include "PCA9685.h"
 
-#define Motor0_A 11  // pin11
-#define Motor0_B 12  // pin12
-#define Motor1_A 13  // pin13
-#define Motor1_B 15  // pin15
+#define Motor0_A 0 //11  // pin11
+#define Motor0_B 1 //12  // pin12
+#define Motor1_A 2 //13  // pin13
+#define Motor1_B 3 //15  // pin15
 
 #define EN_M0    4 	// servo driver IC CH4
 #define EN_M1    5 	// servo driver IC CH5

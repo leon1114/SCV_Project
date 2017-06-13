@@ -23,10 +23,10 @@ void setSpeed(int speed){
 void motorInit(void){
 	unsigned int i;
 	pwm = new PCA9685(1, 0x40);
-	pwm->setPWMFreq(120);
+	pwm->setPWMFreq(90);
 	forward0 = true;
 	forward1 = true;
-	wiringPiSetupPhys();
+//	wiringPiSetup();
 
 	backward0 = forward0==true?false:true;
 	backward1 = forward1==true?false:true;
@@ -120,5 +120,7 @@ void motorTest(){
 void motorTerm(void)
 {
 	ctrl(0);
+	pwm->setPWM(EN_M0, 0, 0);
+	pwm->setPWM(EN_M1, 0, 0);
 	delete pwm;
 }

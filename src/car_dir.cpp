@@ -19,7 +19,7 @@ void dirInit()
 	homePWM += offset;
 
 	pwm = new PCA9685(1, 0x40);
-	pwm->setPWMFreq(120);
+	pwm->setPWMFreq(90);
 	home();
 }
 

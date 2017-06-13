@@ -2,7 +2,7 @@
 #define _CAR_DIR_H
 
 #define CH0 0
-#define HOMEVAL 900
+#define HOMEVAL 675
 
 int Map(int x, int in_min, int in_max, int out_min, int out_max);
 void dirInit(void);

@@ -9,19 +9,24 @@ using namespace std;
 using namespace cv;
 
 volatile int usflag=0;
-extern Mat img;
+
 
 void *ultrasonicDetection(void * param){
 	int dist;
-	printf("ultrasonic detection part");
-	while(true){
+	printf("ultrasonic detection part\n");
+	for(;;){
 		dist = getCM();
+		printf("dist = %d\n", dist);
 		//AEB
-		if(usflag==0&&dist<=20){
+		if(usflag==0&&dist<=25)
+		{
+			printf("usflag on\n");
 			usflag=1;
 		}
 		//Switch to normal driving
-		else if(usflag&&dist>20){
+		else if(usflag&&dist>25)
+		{
+			printf("usflag off\n");
 			usflag=0;
 		}
 		delay(100);
@@ -30,7 +35,7 @@ void *ultrasonicDetection(void * param){
 }
 
 void usInit() {
-	wiringPiSetup();
+//	wiringPiSetup();
 	pinMode(TRIG, OUTPUT);
 	pinMode(ECHO, INPUT);
 
@@ -41,13 +46,14 @@ void usInit() {
 
 int getCM() {
 	//Send trig pulse
+	digitalWrite(TRIG, LOW);
+	delayMicroseconds(2);
 	digitalWrite(TRIG, HIGH);
 	delayMicroseconds(20);
 	digitalWrite(TRIG, LOW);
 
 	//Wait for echo start
 	while(digitalRead(ECHO) == LOW);
-
 	//Wait for echo end
 	long startTime = micros();
 	while(digitalRead(ECHO) == HIGH);
