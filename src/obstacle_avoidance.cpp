@@ -50,7 +50,7 @@ void laneReturn(int direction)
 	forwardWithSpeed(AVOID_SPEED);
 	delay(700);
 
-	if (direction == AVOID_LEFT)  fineTurn(-135);
+	if (direction == AVOID_LEFT) fineTurn(-135);
 	else fineTurn(135);
 }
 

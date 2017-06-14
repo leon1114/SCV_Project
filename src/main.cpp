@@ -9,6 +9,7 @@
 #include "wiringPi.h"
 #include "us_dir.h"
 #include "obstacle_avoidance.h"
+#include "sign.h"
 
 using namespace cv;
 using namespace std;
@@ -27,6 +28,16 @@ void Init()
 	usInit();
 	usdirInit();
 	videoCaptureInit();
+
+#if 1 // 나중에 수정 할거니까 냅두기
+	if (signRecogInit() == -1) {
+		cout << "signRecogInit failed" << endl;
+		exit(0);
+	}
+#else
+	signRecogInit();
+#endif
+
 }
 
 void Terminate()
@@ -39,9 +50,11 @@ void Terminate()
 
 
 extern volatile int usflag;
+extern volatile int fromSignSpd;
 
 int main(int argc, char *argv[])
 {
+
 
 	int ret;
 	pthread_t threadId;

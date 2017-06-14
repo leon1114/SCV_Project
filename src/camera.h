@@ -6,6 +6,9 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <raspicam/raspicam_cv.h>
 
+#define CAMHEIGHT 360
+#define CAMWIDTH 640
+
 void cameraInit();
 cv::Mat getFrame();
 

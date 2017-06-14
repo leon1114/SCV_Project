@@ -35,7 +35,7 @@ int laneKeepingControl()
 	int left_lane_cord = CORD_NOT_SET, right_lane_cord = CORD_NOT_SET;
 	volatile int i;
 	pt.y = INITIAL_Y - getSpeed()*1.25;
-	img = getFrame();
+	img = getFrame().clone();
 	cvtColor(img, gray_img, COLOR_BGR2GRAY);
 	//inRange(gray_img,180,255,gray_img);
 	threshold(gray_img, gray_img, 180,255, THRESH_BINARY|THRESH_OTSU);
