@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
@@ -14,243 +15,166 @@
 #include "motor.h"
 #include "car_dir.h"
 #include "camera.h"
-//Name spaces used
+
 using namespace cv;
 using namespace std;
 using namespace xfeatures2d;
 
 int main() {
-	//turn performance analysis functions on if testing = true
-	bool testing = true;
-	double t; //timing variable
-
 	//load training image
-	Mat object = imread("lena30.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+	unsigned int num = 2;
+	Mat object[num] = {imread("speed40.jpg", CV_LOAD_IMAGE_GRAYSCALE), imread("speed10.jpg", CV_LOAD_IMAGE_GRAYSCALE)};
 	Camera_Init();
-
-	if (!object.data) {
-		cout << "Can't open image";
-		return -1;
-	}
-	namedWindow("Good Matches", CV_WINDOW_AUTOSIZE);
-
 	//SURF Detector, and descriptor parameters
-	int minHess = 500;
-	vector<KeyPoint> kpObject, kpImage;
-	Mat desObject, desImage;
-	//Performance measures calculations for report
-	if (testing) {
-		cout << object.rows << " " << object.cols << endl;
-		//calculate integral image
-		Mat iObject;
-		integral(object, iObject);
-		imshow("Good Matches", iObject);
-		imwrite("IntegralImage.jpg", iObject);
-		cvWaitKey(0);
-		//calculate number of interest points, computation time as f(minHess)
-		int minHessVector[] = { 100, 500, 1000, 1500, 2000, 2500, 3000, 3500,
-				4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500,
-				9000, 9500, 10000 };
-		int minH;
-		std::ofstream file;
-		file.open("TimingC.csv", std::ofstream::out);
-		for (int i = 0; i < 20; i++) {
-			minH = minHessVector[i];
-			t = (double) getTickCount();
+	int minHess = 1000;
+	vector<KeyPoint> kpObject[num], kpImage[num];
+	Mat desObject[num], desImage[num];
 
-			//SurfFeatureDetector detector(minH);
-			cv::Ptr<cv::FeatureDetector> detector = cv::FastFeatureDetector::create(minH);
-			//detector.detect(object, kpObject);
-			detector->detect(object, kpObject);
-			cout << kpObject.size() << endl;
-			t = ((double) getTickCount() - t) / getTickFrequency();
-			file << minHess << "," << kpObject.size() << "," << t << ",";
-			cout << t << " " << kpObject.size() << " " << desObject.size()
-					<< endl;
-			t = (double) getTickCount();
-			//SurfDescriptorExtractor extractor;
-			cv::Ptr<SURF> extractor = SURF::create();
-			extractor->compute(object, kpObject, desObject);
-			t = ((double) getTickCount() - t) / getTickFrequency();
-			file << t << endl;
-		}
-		file.close();
 
-		//Display keypoints on training image
-		Mat interestPointObject = object;
-		for (unsigned int i = 0; i < kpObject.size(); i++) {
-			if (kpObject[i].octave) {
-				circle(interestPointObject, kpObject[i].pt, kpObject[i].size,
-						0);
-				string octaveS;
-				switch (kpObject[i].octave) {
-				case 0:
-					octaveS = "0";
-					break;
-				case 1:
-					octaveS = '1';
-					break;
-				case 2:
-					octaveS = '2';
-					break;
-				default:
-					break;
-
-				}
-				putText(interestPointObject, octaveS, kpObject[i].pt,
-						FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(0, 0, 250), 1,
-						CV_AA);
-			}
-
-		}
-		imshow("Good Matches", interestPointObject);
-		imwrite("bookIP2.jpg", interestPointObject);
-		cvWaitKey(0);
-	}
-
-	//SURF Detector, and descriptor parameters, match object initialization
-	minHess = 500;
-	//SurfFeatureDetector detector(minHess);
-	cv::Ptr<cv::FeatureDetector> detector = cv::FastFeatureDetector::create(minHess);
-	detector->detect(object, kpObject);
-	//SurfDescriptorExtractor extractor;
+	cv::Ptr<SURF> detector = SURF::create(minHess);
 	cv::Ptr<SURF> extractor = SURF::create();
-	extractor->compute(object, kpObject, desObject);
 	FlannBasedMatcher matcher;
 
-	//Initialize video and display window
-	//VideoCapture cap(1);  //camera 1 is webcam
-	//if (!cap.isOpened()) return -1;
+	for(unsigned int i=0; i<num; i++){
+		if (!object[i].data) {
+			cout << "Can't open image";
+			return -1;
+		}
+		//SurfFeatureDetector detector(minHess);
+		detector->detect(object[i], kpObject[i]);
+		//SurfDescriptorExtractor extractor;
+		extractor->compute(object[i], kpObject[i], desObject[i]);
+		if(kpObject[i].empty() == 1){
+			cout << "MinHess probably too high" << endl;
+			return -1;
+		}
+	}
 
-	//Object corner points for plotting box
-	vector<Point2f> obj_corners(4);
-	obj_corners[0] = cvPoint(0, 0);
-	obj_corners[1] = cvPoint(object.cols, 0);
-	obj_corners[2] = cvPoint(object.cols, object.rows);
-	obj_corners[3] = cvPoint(0, object.rows);
+	cout << kpObject[0].size() << endl;
+	cout << kpObject[1].size() << endl;
+
+	waitKey(0);
 
 	//video loop
-	char escapeKey = 'k';
-	double frameCount = 0;
 	float thresholdMatchingNN = 0.7;
-	unsigned int thresholdGoodMatches = 4;
-	unsigned int thresholdGoodMatchesV[] = { 4, 5, 6, 7, 8, 9, 10 };
+	unsigned int thresholdGoodMatches = 8;
+	//unsigned int thresholdGoodMatchesV[] = { 4, 5, 6, 7, 8, 9, 10 };
 
-	for (int j = 0; j < 7; j++) {
-		thresholdGoodMatches = thresholdGoodMatchesV[j];
-		//thresholdGoodMatches=8;
-		cout << thresholdGoodMatches << endl;
+	while (true) {
+		Mat frame;
+		Mat image;
+		Mat hsv_image;
+		frame = Get_Frame();
+//		imshow("CAM", frame);
+		cv::medianBlur(frame, frame, 3);
+		cvtColor(frame, image, CV_RGB2GRAY);
+		cvtColor(frame, hsv_image, cv::COLOR_BGR2HSV);
 
-		if (true) {
-			t = (double) getTickCount();
+		cv::Mat lower_red_hue_range;
+		cv::Mat upper_red_hue_range;
+		cv::inRange(hsv_image, cv::Scalar(0, 100, 100), cv::Scalar(10, 255, 255), lower_red_hue_range);
+		cv::inRange(hsv_image, cv::Scalar(160, 100, 100), cv::Scalar(179, 255, 255), upper_red_hue_range);
+
+		cv::Mat red_hue_image;
+		cv::addWeighted(lower_red_hue_range, 1.0, upper_red_hue_range, 1.0, 0.0, red_hue_image);
+		cv::GaussianBlur(red_hue_image, red_hue_image, cv::Size(9, 9), 2, 2);
+
+		// Use the Hough transform to detect circles in the combined threshold image
+		std::vector<cv::Vec3f> circles;
+		circles.clear();
+		cv::HoughCircles(red_hue_image, circles, CV_HOUGH_GRADIENT, 1, red_hue_image.rows/8, 100, 20, 0, 0);
+
+		if(circles.size() == 0) {
+			//cout << "No RED circles detect" << endl;
+			continue;
 		}
-		while (escapeKey != 'q') {
-			frameCount++;
-			Mat frame;
-			Mat image;
-			//cap>>frame;
-			frame = Get_Frame();
-			cvtColor(frame, image, CV_RGB2GRAY);
 
-			Mat des_image;
-			Mat img_matches, H;
-			vector<KeyPoint> kp_image;
-			vector<vector<DMatch> > matches;
-			vector<DMatch> good_matches;
-			vector<Point2f> obj;
-			vector<Point2f> scene;
-			vector<Point2f> scene_corners(4);
-			detector->detect(image, kp_image);
-			cout << "hi" <<kp_image.size() << endl;
-			extractor->compute(image, kp_image, des_image);
+		//Get the coordinates and the radius of the detect circle.
+		cv::Point center(round(circles[0][0]), round(circles[0][1]));
+		int radius = round(circles[0][2]);
 
-			if ( desObject.empty() )
-			   cvError(0,"MatchFinder","1st descriptor empty",__FILE__,__LINE__);
-			//if ( des_image.empty() )
-			 //  cvError(0,"MatchFinder","2nd descriptor empty",__FILE__,__LINE__);
-			desObject.convertTo(desObject, CV_32F);
-			des_image.convertTo(des_image, CV_32F);
-			matcher.knnMatch(desObject, des_image, matches, 2);
+		//Make the mask for the SURF
+		//cv::circle(frame, center, radius, cv::Scalar(0, 255, 0), 5);
+		Mat mask = Mat::zeros(image.size(), CV_8U);
+		//cout << "center x : " << center.x << " center y " << center.y << " radius " << radius << endl;
 
-			for (int i = 0; i < min(des_image.rows - 1, (int) matches.size());
-					i++) //THIS LOOP IS SENSITIVE TO SEGFAULTS
-					{
-				if ((matches[i][0].distance
-						< thresholdMatchingNN * (matches[i][1].distance))
-						&& ((int) matches[i].size() <= 2
-								&& (int) matches[i].size() > 0)) {
-					good_matches.push_back(matches[i][0]);
+		//Checks if the mask breaches the frame.
+		if( center.x-radius <= 0 || center.y-radius <= 0) continue;
+		if( center.x + (radius*2) >= 320 || center.y + (radius*2) >= 240 ) continue;
+
+		Mat roi(mask, cv::Rect( center.x-radius, center.y-radius, (radius*2), (radius*2)));
+		roi = Scalar(255, 255, 255);
+
+		Mat des_image;
+		Mat img_matches[num], H;
+		vector<KeyPoint> kp_image;
+		vector<vector<DMatch> > matches;
+		vector<DMatch> good_matches[num];
+		vector<Point2f> obj;
+		vector<Point2f> scene;
+		vector<Point2f> scene_corners(4);
+		int flag = 0;
+		detector->detect(image, kp_image, mask);
+		//cout << "In frame, #features : " << kp_image.size() << endl;
+		extractor->compute(image, kp_image, des_image);
+		des_image.convertTo(des_image, CV_32F);
+
+		for(unsigned int i=0; i<num; i++){
+			desObject[i].convertTo(desObject[i], CV_32F);
+			if (desObject[i].empty() || des_image.empty() ) continue;
+			matches.clear();
+			if(kp_image.size() >= 2 && kpObject[i].size() >=2 ) matcher.knnMatch(desObject[i], des_image, matches, 2);
+
+			for (int j = 0; j < min(des_image.rows - 1, (int)matches.size()); j++) //THIS LOOP IS SENSITIVE TO SEGFAULTS
+			{
+				if ((matches[j][0].distance
+						< thresholdMatchingNN * (matches[j][1].distance))
+						&& ((int) matches[j].size() <= 2
+								&& (int) matches[j].size() > 0)) {
+					good_matches[i].push_back(matches[j][0]);
+					cout << i << " push" << endl;
 				}
 			}
-
-			//if (good_matches.size()<1)
-			//	good_matches.resize(0,cv::DMatch);
+			cout << i << " "<< good_matches[i].size() << endl;
 
 			//Draw only "good" matches
-			drawMatches(object, kpObject, image, kp_image, good_matches,
-					img_matches, Scalar::all(-1), Scalar::all(-1),
+			drawMatches(object[i], kpObject[i], image, kp_image, good_matches[i],
+					img_matches[i], Scalar::all(-1), Scalar::all(-1),
 					vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
-
-			if (good_matches.size() >= thresholdGoodMatches) {
-
+			if (good_matches[i].size() >= thresholdGoodMatches) {
 				//Display that the object is found
-				cout << "Match FOUND" << endl;
-				putText(img_matches, "Object Found", cvPoint(10, 50),
+				flag = 1;
+				putText(img_matches[i], "Object Found", cvPoint(10, 50),
 						FONT_HERSHEY_COMPLEX_SMALL, 2, cvScalar(0, 0, 250), 1,
 						CV_AA);
-				for (unsigned int i = 0; i < good_matches.size(); i++) {
+				for (unsigned int j = 0; j < good_matches[i].size(); j++) {
 					//Get the keypoints from the good matches
-					obj.push_back(kpObject[good_matches[i].queryIdx].pt);
-					scene.push_back(kp_image[good_matches[i].trainIdx].pt);
+					obj.push_back(kpObject[i][good_matches[i][j].queryIdx].pt);
+					scene.push_back(kp_image[good_matches[i][j].trainIdx].pt);
 				}
-
-				//H = findHomography(obj, scene, CV_RANSAC);
-
-				//perspectiveTransform(obj_corners, scene_corners, H);
-
-				//Draw lines between the corners (the mapped object in the scene image )
-				/*
-				line(img_matches, scene_corners[0] + Point2f(object.cols, 0),
-						scene_corners[1] + Point2f(object.cols, 0),
-						Scalar(0, 255, 0), 4);
-				line(img_matches, scene_corners[1] + Point2f(object.cols, 0),
-						scene_corners[2] + Point2f(object.cols, 0),
-						Scalar(0, 255, 0), 4);
-				line(img_matches, scene_corners[2] + Point2f(object.cols, 0),
-						scene_corners[3] + Point2f(object.cols, 0),
-						Scalar(0, 255, 0), 4);
-				line(img_matches, scene_corners[3] + Point2f(object.cols, 0),
-						scene_corners[0] + Point2f(object.cols, 0),
-						Scalar(0, 255, 0), 4);
-						*/
-			} else {
-				putText(img_matches, "", cvPoint(10, 50),
+				//Show detected matches
+			}
+			else {
+				putText(img_matches[i], "", cvPoint(10, 50),
 						FONT_HERSHEY_COMPLEX_SMALL, 3, cvScalar(0, 0, 250), 1,
 						CV_AA);
 			}
-
-			//Show detected matches
-			imshow("Good Matches", img_matches);
-			escapeKey = cvWaitKey(10);
-			imwrite("bookIP3.jpg", img_matches);
-
-			//if (frameCount > 10)
-				//escapeKey = 'q';
-
 		}
-		cout << "4" << endl;
-		//average frames per second
-		if (true) {
-			t = ((double) getTickCount() - t) / getTickFrequency();
-			cout << t << " " << frameCount / t << endl;
-			cvWaitKey(0);
+		if(flag){
+			unsigned int max = 0;
+			int maxi = 0;
+			for( unsigned int i = 0; i< num ; i++){
+				if( good_matches[i].size() > max){
+					max = good_matches[i].size();
+					maxi = i;
+				}
+			}
+			cout << "1st pic matches : "  << good_matches[0].size() << " 2nd pic matches : " << good_matches[1].size() << endl;
+			cout << maxi << " is chosen" << endl;
+			imshow("Good Matches", img_matches[maxi]);
+			cvWaitKey(10);
 		}
-
-		frameCount = 0;
-		escapeKey = 'a';
 	}
-
-	//Release camera and exit
 	return 0;
 }
 
