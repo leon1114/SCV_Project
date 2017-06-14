@@ -37,8 +37,8 @@ int laneKeepingControl()
 	pt.y = INITIAL_Y - getSpeed()*1.25;
 	img = getFrame();
 	cvtColor(img, gray_img, COLOR_BGR2GRAY);
-	inRange(gray_img,100,255,gray_img);
-//	threshold(gray_img, gray_img, 180,255, THRESH_BINARY|THRESH_OTSU);
+	//inRange(gray_img,180,255,gray_img);
+	threshold(gray_img, gray_img, 180,255, THRESH_BINARY|THRESH_OTSU);
 
 	//Stop line detect && stop
     if (!isOnCorner && gray_img.at<uchar>(pt.y - 30, pt.x) != 0)

@@ -9,7 +9,7 @@ void usdirInit(void);
 void seeHome(void);
 void seeLeft(int);
 void seeRight(int);
-void usTest(void);
+void usdirTest(void);
 void usdirTerm(void);
 
 #endif

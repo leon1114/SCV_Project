@@ -16,6 +16,7 @@ using namespace std;
 #define ESC_KEY 27
 #define LK_END 1
 
+extern int dist;
 
 void Init()
 {
@@ -41,12 +42,15 @@ extern volatile int usflag;
 
 int main(int argc, char *argv[])
 {
+
 	int ret;
 	pthread_t threadId;
 	const char *msgThread = "Ultrasonic detection thread";
-//	void *threadRet;
+	void *threadRet;
 
 	Init();
+
+	seeHome();
 	forwardWithSpeed(BASIC_SPEED);
 
 	ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
@@ -63,6 +67,11 @@ int main(int argc, char *argv[])
 			int prevSpeed = getSpeed();
 			stop();
 			laneDeparture(1);
+			seeRight(90);
+
+			while(dist <= 20) singleLaneTracking(1);
+			seeHome();
+
 			laneReturn(1);
 			usflag = 0;
 			setSpeed(prevSpeed);
@@ -73,6 +82,7 @@ int main(int argc, char *argv[])
 	}
 
 	printf("Terminate\n");
+	pthread_exit(NULL);
 	Terminate();
 
 	waitKey(0);

@@ -22,17 +22,17 @@ void laneDeparture(int direction)
 	  주어진 방향의 반대 방향에 차선이 보이도록 정렬한 상태로 만들고,
 	  pt.x 를 지정한 후 종료되어야 함.
 	 */
-	if (direction == AVOID_RIGHT) turnRight();
-	else turnLeft();
+	if (direction == AVOID_RIGHT) fineTurn(135);
+	else fineTurn(-135);
 
 	forwardWithSpeed(AVOID_SPEED);
-	delay(1000);
+	delay(700);
 
 
-	if (direction == AVOID_RIGHT) turnLeft();
-	else turnRight();
+	if (direction == AVOID_RIGHT) fineTurn(-135);
+	else fineTurn(135);
 
-	delay(1000);
+	delay(700);
 	stop();
 
 	return;
@@ -44,14 +44,14 @@ void laneReturn(int direction)
 	 장애물 회피 후 본 차선으로 되돌아가는 함수.
 	 direction 인자가 0 일 때는 왼쪽으로, 1 일 때는 오른쪽으로 돌아간다.
 	 */
-	if (direction == AVOID_LEFT) turnRight();
-	else turnLeft();
+	if (direction == AVOID_LEFT) fineTurn(135);
+	else  fineTurn(-135);
 
 	forwardWithSpeed(AVOID_SPEED);
-	delay(1000);
+	delay(700);
 
-	if (direction == AVOID_LEFT) turnLeft();
-	else turnRight();
+	if (direction == AVOID_LEFT)  fineTurn(-135);
+	else fineTurn(135);
 }
 
 int singleLaneTracking(int direction)
@@ -104,14 +104,14 @@ int singleLaneTracking(int direction)
 	}
 	else if (lane_cord == INITIAL_X)
 	{
-		if (direction == 0) turnRight();
-		else turnLeft();
+		if (direction == 0) fineTurn(135);
+		else fineTurn(-135);
 		pt.x = INITIAL_X;
 	}
 	else
 	{
-		if (direction == 0) turnLeft();
-		else turnRight();
+		if (direction == 0) fineTurn(-135);
+		else fineTurn(135);
 		pt.x = INITIAL_X;
 	}
 	writer.write(img);

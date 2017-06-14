@@ -9,20 +9,20 @@ using namespace std;
 using namespace cv;
 
 volatile int usflag=0;
-
+int dist;
 
 void *ultrasonicDetection(void * param){
-	int dist;
 	printf("US detection thread has been created\n");
 	while(true){
 		dist = getCM();
+		printf("US DIST : %d\n", dist);
 		//AEB
-		if(usflag==0&&dist<=25)
+		if(usflag==0&&dist<=40)
 		{
 			usflag=1;
 		}
 		//Switch to normal driving
-		else if(usflag&&dist>25)
+		else if(usflag&&dist>40)
 		{
 			usflag=0;
 		}
