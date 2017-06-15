@@ -13,11 +13,9 @@
 
 using namespace cv;
 using namespace std;
-#define BASIC_SPEED 100
+#define BASIC_SPEED 70
 #define ESC_KEY 27
 #define LK_END 1
-
-extern int dist;
 
 void Init()
 {
@@ -29,7 +27,7 @@ void Init()
 	usdirInit();
 	videoCaptureInit();
 
-#if 1 // 나중에 수정 할거니까 냅두기
+#if 0 // 나중에 수정 할거니까 냅두기
 	if (signRecogInit() == -1) {
 		cout << "signRecogInit failed" << endl;
 		exit(0);
@@ -54,21 +52,27 @@ extern volatile int fromSignSpd;
 
 int main(int argc, char *argv[])
 {
-
-
 	int ret;
-	pthread_t threadId;
-	const char *msgThread = "Ultrasonic detection thread";
-	void *threadRet;
+	pthread_t threadUSId;
+	pthread_t threadSRId;
+	const char *threadUS = "Ultrasonic detection thread";
+	const char *threadSR = "Sign Recognition thread";
+
 
 	Init();
 
 	seeHome();
 	forwardWithSpeed(BASIC_SPEED);
 
-	ret = pthread_create(&threadId, NULL, ultrasonicDetection, (void *)msgThread);
+	ret = pthread_create(&threadUSId, NULL, ultrasonicDetection, (void *)threadUS);
 	if (ret){
 		printf("Cannot Open Thread for US\n");
+		return -1;
+	}
+
+	ret = pthread_create(&threadSRId, NULL, signRecog, (void *)threadSR);
+	if (ret){
+		printf("Cannot Open Thread for SR\n");
 		return -1;
 	}
 
@@ -76,9 +80,19 @@ int main(int argc, char *argv[])
 	{
 		ret = laneKeepingControl();
 		if(ret == LK_END) break;
+		if (fromSignSpd){
+			setSpeed(fromSignSpd);
+			cout << "fromSignSpd : " << fromSignSpd << endl;
+			fromSignSpd = 0;
+		}
+
 		if (usflag == 1){
 			int prevSpeed = getSpeed();
-			stop();
+			setSpeed(0);
+			while(usflag);
+			setSpeed(prevSpeed);
+
+#if 0
 			laneDeparture(1);
 			seeRight(90);
 
@@ -88,15 +102,21 @@ int main(int argc, char *argv[])
 			laneReturn(1);
 			usflag = 0;
 			setSpeed(prevSpeed);
-//			while(usflag);
-//			forwardWithSpeed(prevSpeed);
+			while(usflag);
+			forwardWithSpeed(prevSpeed);
+#endif
 		}
+
+
 		if(cv::waitKey(20) == ESC_KEY) break;
 	}
 
+
 	printf("Terminate\n");
-	pthread_exit(NULL);
 	Terminate();
+	pthread_cancel(threadSRId);
+	pthread_cancel(threadUSId);
+
 
 	waitKey(0);
 	return 0;

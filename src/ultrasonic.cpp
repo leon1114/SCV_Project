@@ -15,11 +15,12 @@ void *ultrasonicDetection(void * param){
 	printf("US detection thread has been created\n");
 	while(true){
 		dist = getCM();
-		printf("US DIST : %d\n", dist);
+
 		//AEB
 		if(usflag==0&&dist<=40)
 		{
 			usflag=1;
+			printf("US DIST : %d\n", dist);
 		}
 		//Switch to normal driving
 		else if(usflag&&dist>40)

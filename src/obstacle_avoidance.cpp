@@ -5,6 +5,9 @@
 #include "motor.h"
 #include "wiringPi.h"
 
+#define turnLeft() (fineTurn(-135))
+#define turnRight() (fineTurn(135))
+
 using namespace cv;
 using namespace std;
 
@@ -23,14 +26,14 @@ void laneDeparture(int direction)
 	  pt.x 를 지정한 후 종료되어야 함.
 	 */
 	if (direction == AVOID_RIGHT) fineTurn(135);
-	else fineTurn(-135);
+	else turnLeft();
 
 	forwardWithSpeed(AVOID_SPEED);
 	delay(700);
 
 
-	if (direction == AVOID_RIGHT) fineTurn(-135);
-	else fineTurn(135);
+	if (direction == AVOID_RIGHT) turnLeft();
+	else turnRight();
 
 	delay(700);
 	stop();
@@ -44,14 +47,14 @@ void laneReturn(int direction)
 	 장애물 회피 후 본 차선으로 되돌아가는 함수.
 	 direction 인자가 0 일 때는 왼쪽으로, 1 일 때는 오른쪽으로 돌아간다.
 	 */
-	if (direction == AVOID_LEFT) fineTurn(135);
-	else  fineTurn(-135);
+	if (direction == AVOID_LEFT) turnRight();
+	else  turnLeft();
 
 	forwardWithSpeed(AVOID_SPEED);
 	delay(700);
 
-	if (direction == AVOID_LEFT) fineTurn(-135);
-	else fineTurn(135);
+	if (direction == AVOID_LEFT) turnLeft();
+	else turnRight();
 }
 
 int singleLaneTracking(int direction)
@@ -104,14 +107,14 @@ int singleLaneTracking(int direction)
 	}
 	else if (lane_cord == INITIAL_X)
 	{
-		if (direction == 0) fineTurn(135);
-		else fineTurn(-135);
+		if (direction == 0) turnRight();
+		else turnLeft();
 		pt.x = INITIAL_X;
 	}
 	else
 	{
-		if (direction == 0) fineTurn(-135);
-		else fineTurn(135);
+		if (direction == 0) turnLeft();
+		else turnRight();
 		pt.x = INITIAL_X;
 	}
 	writer.write(img);

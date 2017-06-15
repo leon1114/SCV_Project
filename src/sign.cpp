@@ -1,5 +1,3 @@
-//Include statements
-
 #include "sign.h"
 #include "motor.h"
 #include "car_dir.h"
@@ -8,12 +6,14 @@
 static Mat object[NUM];
 static vector<KeyPoint> kpObject[NUM];
 static Mat desObject[NUM];
-static const string file[NUM] = { "speed40.jpg", "speed100.jpg"};
-
-volatile int fromSignSpd=-1;
+static const string file[NUM] = { "speed35.jpg", "speed100.jpg"};
+//static const string file[NUM] = { "number4.jpg", "number9.jpg"};
+static const int speedArray[] = {35, 100};
+volatile int fromSignSpd;
 
 int signRecogInit(){
 
+	cout << "HI INIT" << endl;
 	for (unsigned int i = 0; i < NUM; i++) {
 		object[i] = imread(file[i], CV_LOAD_IMAGE_GRAYSCALE);
 	}
@@ -53,21 +53,29 @@ void redExtract(InputArray src, OutputArray dst){
 	cvtColor(src, ycrcb, CV_BGR2YCrCb);
 	split(ycrcb, ycrcbPlanes);
 	threshold(ycrcbPlanes[2], dst, 150, 255, CV_THRESH_BINARY);
-	erode(dst, dst, Mat());
+	GaussianBlur(dst, dst, Size(9,9), 2, 2);
 
 }
 
 int createMask(vector<Vec3f> circles, Mat& mask, Size size){
 
 	int ptx = (int)circles[0][0], pty= (int)circles[0][1], radius = (int)circles[0][2];
-	if (ptx - radius < 0 || pty-radius < 0 || ptx + 2*radius >= CAMWIDTH || pty + 2*radius >= CAMHEIGHT) return -1;
+//	if (ptx - radius < 0 || pty-radius < 0 || ptx + 2*radius >= CAMWIDTH || pty + 2*radius >= CAMHEIGHT) return -1;
+	int left = ptx-radius >= 0? ptx-radius: 0;
+	int top = pty-radius >= 0? pty-radius: 0;
+	if ((left + 2*radius)>=CAMWIDTH) left = CAMWIDTH-2*radius-1;
+	if ((top + 2*radius) >= CAMHEIGHT) top = CAMHEIGHT - 2*radius -1;
+
 
 	mask = Mat::zeros(size, CV_8U);
-	Mat roi(mask, cv::Rect( ptx-radius, pty-radius, (2*radius), (2*radius)));
+	Mat roi(mask, Rect( left, top, (2*radius), (2*radius)));
+	cout << "roi : " << Rect( left, top, (2*radius), (2*radius)) << endl;
 	roi = Scalar(255, 255, 255);
 
 	return 0;
 }
+
+
 
 int bestMatch(const Mat& frame, const Mat& mask){
 
@@ -84,7 +92,7 @@ int bestMatch(const Mat& frame, const Mat& mask){
 	Mat frameMatches[NUM];
 
 	unsigned int max = 0;
-	unsigned int detectedObject = 0;
+	int detectedObject = -1;
 
 	detector->detect(frame, kpFrame, mask);
 	if (kpFrame.empty()){
@@ -126,16 +134,24 @@ int bestMatch(const Mat& frame, const Mat& mask){
 				detectedObject = i;
 			}
 		}
+
+		for (unsigned int i = 0; i < NUM; i++){
+			if (goodMatches[i].size() == max && detectedObject != i){
+				detectedObject = -1;
+				break;
+			}
+		}
+
 		cout << "1st pic matches : "  << goodMatches[0].size() << " 2nd pic matches : " << goodMatches[1].size() << endl;
 		cout << detectedObject << " is chosen" << endl;
 
 	}
-	else return -1;
+//	else return -1;
 
 	return detectedObject;
 }
 
-void signRecog(void){
+void *signRecog(void * param){
 
 //#define VIEW
 
@@ -145,7 +161,7 @@ void signRecog(void){
 
 	while(true){
 
-		waitKey(10);
+//		waitKey(5);
 
 		frame = getFrame().clone();
 
@@ -159,26 +175,26 @@ void signRecog(void){
 		vector<Vec3f> circles;
 		HoughCircles(redBinary, circles, CV_HOUGH_GRADIENT, 1, redBinary.rows/8, 100, 20, 0, 0);
 		if (circles.size() < 1) {
-			cout << "No red traffic sign in frame" << endl;
+//			cout << "No red traffic sign in frame" << endl;
 			continue;
 		}
-		else cout << "detect " << circles.size() << " circles" << endl;
 
 		//create mask
+
 		Mat mask;
 		if (createMask(circles, mask, redBinary.size()) == -1){
 			cout << "Out of frame" << endl;
 			continue;
 		}
-
 		/******* EXTRACT RED CIRCULAR OBJECT IN FRAME END *******/
 
 		//Matching
-		ret = bestMatch(frame, mask);
+		ret = bestMatch(gray, mask);
 		if (ret >= 0) {
-			fromSignSpd = ret;
+			fromSignSpd = speedArray[ret];
 			cout << "CHANGE SPEED " << fromSignSpd << endl;
 		}
+
 
 	}
 

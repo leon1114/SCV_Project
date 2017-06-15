@@ -75,21 +75,21 @@ int laneKeepingControl()
 		if(left_lane_cord!=CORD_NOT_SET && right_lane_cord!=CORD_NOT_SET) break;
 	}
 
-	printf("PT.X : %d , Left lane x cord : %d, Right lane x cord : %d\n", pt.x, left_lane_cord, right_lane_cord);
+//	printf("PT.X : %d , Left lane x cord : %d, Right lane x cord : %d\n", pt.x, left_lane_cord, right_lane_cord);
 
 	//mid-lane track
 	if (left_lane_cord != CORD_NOT_SET && right_lane_cord != CORD_NOT_SET)
 	{
 		fineTurn((pt.x - INITIAL_X)/5);
 		isOnCorner = 0;
-		//width = right_lane_cord - left_lane_cord;
+//		width = right_lane_cord - left_lane_cord;
 	}
 	//turn right
 	else if (left_lane_cord != CORD_NOT_SET)
 	{
 		turndx = (int)(((2*left_lane_cord+width)/2 - INITIAL_X)/2.0)>135?135:(int)(((2*left_lane_cord+width)/2 - INITIAL_X)/2.0);
 		fineTurn(turndx);
-		printf("RIGHT TURN : %d\n", turndx);
+//		printf("RIGHT TURN : %d\n", turndx);
 		isOnCorner = 1;
 	}
 	//turn left
@@ -97,7 +97,7 @@ int laneKeepingControl()
 	{
 		turndx = (int)(((2*right_lane_cord-width)/2 - INITIAL_X)/2.0)<-135?-135:(int)(((2*right_lane_cord-width)/2 - INITIAL_X)/2.0);
 		fineTurn(turndx);
-		printf("LEFT TURN : %d\n", turndx);
+//		printf("LEFT TURN : %d\n", turndx);
 		isOnCorner = 1;
 	}
 	//lane end
@@ -111,7 +111,7 @@ int laneKeepingControl()
 #ifdef SHOW_CAMERA_VISION
 	if (left_lane_cord != CORD_NOT_SET) circle(img, Point(left_lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
 	if (right_lane_cord != CORD_NOT_SET) circle(img, Point(right_lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
-	imshow("test", img);
+	//imshow("test", img);
 #endif
 
 	//Init l-r lane cord

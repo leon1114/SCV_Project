@@ -22,9 +22,9 @@
 #include "opencv2/xfeatures2d.hpp"
 
 #define NUM 2
-#define minHess 1000
-#define thresholdMatchingNN 0.7
-#define thresholdGoodMatches 8
+#define minHess 600// 낮을수록 feature 많이 찾음.
+#define thresholdMatchingNN 0.7 // 낮을수록 빡빡하게 맞다고함.
+#define thresholdGoodMatches 5
 
 using namespace cv;
 using namespace std;
@@ -34,7 +34,7 @@ int signRecogInit();
 void redExtract(InputArray, OutputArray);
 int createMask(vector<Vec3f>, Mat&, Size);
 int bestMatch(const Mat&, const Mat&);
-void signRecog(void);
+void *signRecog(void*);
 
 
 #endif /* SIGN_H_ */
