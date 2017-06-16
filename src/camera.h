@@ -7,7 +7,7 @@
 #include <raspicam/raspicam_cv.h>
 
 #define CAMHEIGHT 360
-#define CAMWIDTH 640
+#define CAMWIDTH 800
 
 void cameraInit();
 cv::Mat getFrame();

@@ -17,6 +17,8 @@ using namespace std;
 #define ESC_KEY 27
 #define LK_END 1
 
+VideoWriter writer;
+
 void Init()
 {
 	wiringPiSetup();
@@ -49,6 +51,10 @@ void Terminate()
 
 extern volatile int usflag;
 extern volatile int fromSignSpd;
+extern int camera_turned;
+extern int dist;
+extern Point pt;
+extern int angle;
 
 int main(int argc, char *argv[])
 {
@@ -62,6 +68,7 @@ int main(int argc, char *argv[])
 	Init();
 
 	seeHome();
+	angle = 0;
 	forwardWithSpeed(BASIC_SPEED);
 
 	ret = pthread_create(&threadUSId, NULL, ultrasonicDetection, (void *)threadUS);
@@ -87,26 +94,35 @@ int main(int argc, char *argv[])
 		}
 
 		if (usflag == 1){
+
 			int prevSpeed = getSpeed();
+
+			printf("Spd when US detected : %d\n", prevSpeed);
 			setSpeed(0);
-			while(usflag);
-			setSpeed(prevSpeed);
 
-#if 0
-			laneDeparture(1);
-			seeRight(90);
+			if (prevSpeed <= 50){
 
-			while(dist <= 20) singleLaneTracking(1);
-			seeHome();
+				printf("On avoidance\n");
 
-			laneReturn(1);
-			usflag = 0;
-			setSpeed(prevSpeed);
-			while(usflag);
-			forwardWithSpeed(prevSpeed);
-#endif
+				pt.x += 560;
+				delay(200);
+				setSpeed(AVOID_SPEED);
+
+				while (1) {
+					singleLaneTracking(0);
+					if (camera_turned && dist >= 40)
+					{
+						break;
+					}
+					waitKey(20);
+				}
+				laneReturn(0);
+			}
+			else {
+				while(usflag);
+				setSpeed(prevSpeed);
+			}
 		}
-
 
 		if(cv::waitKey(20) == ESC_KEY) break;
 	}
@@ -116,7 +132,6 @@ int main(int argc, char *argv[])
 	Terminate();
 	pthread_cancel(threadSRId);
 	pthread_cancel(threadUSId);
-
 
 	waitKey(0);
 	return 0;

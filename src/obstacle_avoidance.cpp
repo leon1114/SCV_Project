@@ -4,6 +4,8 @@
 #include "camera.h"
 #include "motor.h"
 #include "wiringPi.h"
+#include "us_dir.h"
+#include "ultrasonic.h"
 
 #define turnLeft() (fineTurn(-135))
 #define turnRight() (fineTurn(135))
@@ -12,34 +14,12 @@ using namespace cv;
 using namespace std;
 
 extern Point pt;
-extern int isOnCorner;
 extern VideoWriter writer;
+int camera_turned;
+extern int angle;
 
-void laneDeparture(int direction)
-{
-	/*
-	  장애물 감지 후 차선을 벗어나는 함수
-	  direction 인자가 0 일 때는 오른쪽으로, 1 일 때는 왼쪽으로 벗어난다.
-
-	  본 함수는 주어진 방향으로 차선을 벗어난 후,
-	  주어진 방향의 반대 방향에 차선이 보이도록 정렬한 상태로 만들고,
-	  pt.x 를 지정한 후 종료되어야 함.
-	 */
-	if (direction == AVOID_RIGHT) fineTurn(135);
-	else turnLeft();
-
-	forwardWithSpeed(AVOID_SPEED);
-	delay(700);
-
-
-	if (direction == AVOID_RIGHT) turnLeft();
-	else turnRight();
-
-	delay(700);
-	stop();
-
-	return;
-}
+int leftTurned;
+int rightTurned;
 
 void laneReturn(int direction)
 {
@@ -47,14 +27,20 @@ void laneReturn(int direction)
 	 장애물 회피 후 본 차선으로 되돌아가는 함수.
 	 direction 인자가 0 일 때는 왼쪽으로, 1 일 때는 오른쪽으로 돌아간다.
 	 */
+
+	setSpeed(0);
+	angle = 0;
+	camera_turned = 0;
 	if (direction == AVOID_LEFT) turnRight();
 	else  turnLeft();
 
 	forwardWithSpeed(AVOID_SPEED);
-	delay(700);
+	delay(1000);
 
 	if (direction == AVOID_LEFT) turnLeft();
 	else turnRight();
+
+	delay(100);
 }
 
 int singleLaneTracking(int direction)
@@ -69,23 +55,22 @@ int singleLaneTracking(int direction)
 	 */
 	Mat gray_img;
 	Mat img;
-	int turndx;
+	static int turndx;
 	Scalar pixel_val;
 	int lane_cord = CORD_NOT_SET;
 	volatile int i;
 	int multiplier = direction == 0 ? -1 : 1;
 	pt.y = INITIAL_Y - 50;
-	img = getFrame();
+	img = getFrame().clone();
 	cvtColor(img, gray_img, COLOR_BGR2GRAY);
-	inRange(gray_img,200,255,gray_img);
+	inRange(gray_img,180,255,gray_img);
 
     //Lane detection
-	for (i=1;i<=640;i++)
+	for (i=1;i<=CAMWIDTH;i++)
 	{
 		if (pt.x + i * multiplier < 0 || pt.x + i * multiplier > 640)
 		{
-			printf("singleLaneTracking Error : Cannot find lane\n");
-			break;
+			continue;
 		}
 		pixel_val = gray_img.at<uchar>(pt.y, pt.x + i * multiplier);
 
@@ -96,29 +81,30 @@ int singleLaneTracking(int direction)
 		}
 	}
 
-	printf("singleLaneTracking Lane Found, Cord : %d\n", lane_cord);
+	if (!camera_turned && lane_cord <= 50 && (turndx >= -20 && turndx <= 20)&& rightTurned && leftTurned) {
+		setSpeed(0);
+		angle = 90;
+		delay(500);
+		setSpeed(AVOID_SPEED);
+		camera_turned = 1;
+		rightTurned = 0;
+		leftTurned = 0;
+	}
 
 	if (lane_cord != CORD_NOT_SET)
 	{
 		turndx = (int)(((2*lane_cord + (AVOID_WIDTH * multiplier * (-1)))/2 - INITIAL_X)/3)>90?90:(int)(((2*lane_cord+(AVOID_WIDTH * multiplier * (-1)))/2 - INITIAL_X)/3);
 		fineTurn(turndx);
-		pt.x = (lane_cord + AVOID_WIDTH * multiplier * (-1)) / 2;
-		circle(img, Point(lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
-	}
-	else if (lane_cord == INITIAL_X)
-	{
-		if (direction == 0) turnRight();
-		else turnLeft();
-		pt.x = INITIAL_X;
+		pt.x = lane_cord + (AVOID_WIDTH * multiplier * (-1)) / 2;
 	}
 	else
 	{
-		if (direction == 0) turnLeft();
+		if (direction == AVOID_RIGHT) turnLeft();
 		else turnRight();
-		pt.x = INITIAL_X;
 	}
-	writer.write(img);
-	imshow("test", img);
+
+	if (turndx > 50) rightTurned = 1;
+	if (rightTurned && turndx < -20) leftTurned = 1;
 
 	return 0;
 }

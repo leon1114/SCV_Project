@@ -6,7 +6,7 @@
 #include "car_dir.h"
 #include "wiringPi.h"
 
-#define RECORD
+#define RECORD 0
 #define SHOW_CAMERA_VISION
 
 using namespace std;
@@ -18,17 +18,15 @@ Mat img;
 Point pt = Point(INITIAL_X, INITIAL_Y-50);
 Mat gray_img;
 Scalar left_val, right_val;
-VideoWriter writer;
-int width=450, turndx;
+extern VideoWriter writer;
+int width=560, turndx;
 int isOnCorner;
 int road_ended;
 
-#ifdef RECORD
 void videoCaptureInit()
 {
-	writer.open("./record.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10.0, Size(640, 360), 1);
+	//writer.open("./record.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10.0, Size(CAMWIDTH, CAMHEIGHT), 1);
 }
-#endif
 
 int laneKeepingControl()
 {
@@ -37,7 +35,6 @@ int laneKeepingControl()
 	pt.y = INITIAL_Y - getSpeed()*1.25;
 	img = getFrame().clone();
 	cvtColor(img, gray_img, COLOR_BGR2GRAY);
-	//inRange(gray_img,180,255,gray_img);
 	threshold(gray_img, gray_img, 180,255, THRESH_BINARY|THRESH_OTSU);
 
 	//Stop line detect && stop
@@ -60,10 +57,10 @@ int laneKeepingControl()
     }
 
     //Lane detection
-	for (i=1;i<=640;i++)
+	for (i=1;i<=CAMWIDTH;i++)
 	{
 		if (pt.x - i >= 0) left_val = gray_img.at<uchar>(pt.y, pt.x - i);
-		if (pt.x + i <= 640) right_val = gray_img.at<uchar>(pt.y, pt.x + i);
+		if (pt.x + i <= CAMWIDTH) right_val = gray_img.at<uchar>(pt.y, pt.x + i);
 		if (left_lane_cord == CORD_NOT_SET && left_val.val[0] != 0)
 		{
 			left_lane_cord = pt.x - i;
@@ -116,13 +113,13 @@ int laneKeepingControl()
 
 	//Init l-r lane cord
 	if (left_lane_cord == CORD_NOT_SET) left_lane_cord = 0;
-	if (right_lane_cord == CORD_NOT_SET) right_lane_cord = 640;
+	if (right_lane_cord == CORD_NOT_SET) right_lane_cord = CAMWIDTH;
 
 	//Update point x-axis
 	pt.x = (left_lane_cord + right_lane_cord) / 2;
 
 #ifdef RECORD
-	writer.write(img);
+	//writer.write(img);
 #endif
 
 	//No lane detected

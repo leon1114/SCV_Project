@@ -96,7 +96,7 @@ int bestMatch(const Mat& frame, const Mat& mask){
 
 	detector->detect(frame, kpFrame, mask);
 	if (kpFrame.empty()){
-		cout << "empty kpFrame" << endl;
+		//cout << "empty kpFrame" << endl;
 		return -1;
 	}
 	else cout << "KeyPoints : " << kpFrame.size() << endl;
