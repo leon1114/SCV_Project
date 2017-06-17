@@ -27,18 +27,19 @@ void *ultrasonicDetection(void * param){
 		ret = getCM();
 		if(ret == -1) continue;
 		dist = ret;
-		printf("dist %d \n", dist);
+//		printf("dist : %d \n", dist);
 		//AEB
 		if(usflag==0&&dist<=40)
 		{
 			usflag=1;
-			printf("US flag on\n");
+			printf("US flag on dist: %d\n", dist);
 
 		}
 		//Switch to normal driving
 		else if(usflag == 1 && dist>40)
 		{
 			usflag=0;
+			printf("US flag off dist: %d\n", dist);
 		}
 		delay(100);
 	}

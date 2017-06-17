@@ -6,6 +6,9 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <raspicam/raspicam_cv.h>
 
+#define RECORD_CAMERA_VISION 0
+#define SHOW_CAMERA_VISION 0
+
 #define CAMHEIGHT 360
 #define CAMWIDTH 800
 

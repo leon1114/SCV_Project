@@ -5,9 +5,7 @@
 #include "motor.h"
 #include "car_dir.h"
 #include "wiringPi.h"
-
-#define RECORD 0
-#define SHOW_CAMERA_VISION
+#include "video_record.h"
 
 using namespace std;
 using namespace cv;
@@ -18,15 +16,9 @@ Mat img;
 Point pt = Point(INITIAL_X, INITIAL_Y-50);
 Mat gray_img;
 Scalar left_val, right_val;
-extern VideoWriter writer;
 int width=560, turndx;
 int isOnCorner;
 int road_ended;
-
-void videoCaptureInit()
-{
-	//writer.open("./record.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10.0, Size(CAMWIDTH, CAMHEIGHT), 1);
-}
 
 int laneKeepingControl()
 {
@@ -105,10 +97,14 @@ int laneKeepingControl()
 	}
 
 	//Draw circles inside of each lane
-#ifdef SHOW_CAMERA_VISION
+#if SHOW_CAMERA_VISION
 	if (left_lane_cord != CORD_NOT_SET) circle(img, Point(left_lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
 	if (right_lane_cord != CORD_NOT_SET) circle(img, Point(right_lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
-	//imshow("test", img);
+	imshow("test", img);
+#endif
+
+#if RECORD_CAMERA_VISION
+	videoFrameWrite(img);
 #endif
 
 	//Init l-r lane cord
@@ -117,10 +113,6 @@ int laneKeepingControl()
 
 	//Update point x-axis
 	pt.x = (left_lane_cord + right_lane_cord) / 2;
-
-#ifdef RECORD
-	//writer.write(img);
-#endif
 
 	//No lane detected
 	if (road_ended)

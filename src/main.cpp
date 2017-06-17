@@ -17,8 +17,6 @@ using namespace std;
 #define ESC_KEY 27
 #define LK_END 1
 
-VideoWriter writer;
-
 void Init()
 {
 	wiringPiSetup();
@@ -59,11 +57,11 @@ extern int angle;
 int main(int argc, char *argv[])
 {
 	int ret;
+	Mat cam_img;
 	pthread_t threadUSId;
 	pthread_t threadSRId;
 	const char *threadUS = "Ultrasonic detection thread";
 	const char *threadSR = "Sign Recognition thread";
-
 
 	Init();
 
@@ -119,7 +117,14 @@ int main(int argc, char *argv[])
 				laneReturn(0);
 			}
 			else {
-				while(usflag);
+				while(usflag)
+				{
+#if RECORD_CAMERA_VISION
+					cam_img = getFrame().clone();
+					videoFrameWrite(cam_img);
+					waitKey(20);
+#endif
+				};
 				setSpeed(prevSpeed);
 			}
 		}

@@ -2,6 +2,7 @@
 #include "obstacle_avoidance.h"
 #include "lanekeeping.h"
 #include "camera.h"
+#include "video_record.h"
 #include "motor.h"
 #include "wiringPi.h"
 #include "us_dir.h"
@@ -68,7 +69,7 @@ int singleLaneTracking(int direction)
     //Lane detection
 	for (i=1;i<=CAMWIDTH;i++)
 	{
-		if (pt.x + i * multiplier < 0 || pt.x + i * multiplier > 640)
+		if (pt.x + i * multiplier < 0 || pt.x + i * multiplier > CAMWIDTH)
 		{
 			continue;
 		}
@@ -105,6 +106,10 @@ int singleLaneTracking(int direction)
 
 	if (turndx > 50) rightTurned = 1;
 	if (rightTurned && turndx < -20) leftTurned = 1;
+
+#if RECORD_CAMERA_VISION
+	videoFrameWrite(img);
+#endif
 
 	return 0;
 }
