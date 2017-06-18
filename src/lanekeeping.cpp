@@ -16,7 +16,7 @@ Mat img;
 Point pt = Point(INITIAL_X, INITIAL_Y-50);
 Mat gray_img;
 Scalar left_val, right_val;
-int width=560, turndx;
+int width=450, turndx;
 int isOnCorner;
 int road_ended;
 

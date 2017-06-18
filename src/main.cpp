@@ -4,6 +4,7 @@
 #include "motor.h"
 #include "car_dir.h"
 #include "camera.h"
+#include "video_record.h"
 #include "lanekeeping.h"
 #include "ultrasonic.h"
 #include "wiringPi.h"
