@@ -14,13 +14,58 @@
 using namespace cv;
 using namespace std;
 
-extern Point pt;
-extern VideoWriter writer;
-int camera_turned;
-extern int angle;
 
+int cameraTurned;
+int obstacleFound;
 int leftTurned;
 int rightTurned;
+extern int angle;
+extern int dist;
+extern int isOnCorner;
+extern Point pt;
+extern VideoWriter writer;
+
+void manageObstacle()
+{
+	Mat camImg;
+	int prevSpeed = getSpeed();
+	extern int usflag;
+	setSpeed(0);
+	if (prevSpeed <= 50){
+
+		pt.x += 450; // OBSTACLE AVOIDANCE 오작동시 560으로 바꾸기
+		delay(200);
+		setSpeed(AVOID_SPEED);
+
+		while (1) {
+			singleLaneTracking(0);
+			if (cameraTurned && dist >= 40 && obstacleFound)
+			{
+				obstacleFound = 0;
+				isOnCorner = 1;
+				break;
+			}
+			else if (cameraTurned && dist < 40 && !obstacleFound)
+			{
+				obstacleFound = 1;
+			}
+			waitKey(20);
+		}
+		laneReturn(0);
+	}
+	else
+	{
+		while(usflag)
+		{
+	#if RECORD_CAMERA_VISION
+			camImg = getFrame().clone();
+			videoFrameWrite(camImg);
+			waitKey(20);
+	#endif
+		};
+		setSpeed(prevSpeed);
+	}
+}
 
 void laneReturn(int direction)
 {
@@ -31,7 +76,7 @@ void laneReturn(int direction)
 
 	setSpeed(0);
 	angle = 0;
-	camera_turned = 0;
+	cameraTurned = 0;
 	if (direction == AVOID_LEFT) turnRight();
 	else  turnLeft();
 
@@ -82,19 +127,19 @@ int singleLaneTracking(int direction)
 		}
 	}
 
-	if (!camera_turned && lane_cord <= 50 && (turndx >= -20 && turndx <= 20)&& rightTurned && leftTurned) {
+	if (!cameraTurned && (turndx > -20 && turndx < 20) && rightTurned && leftTurned) {
 		setSpeed(0);
 		angle = 90;
 		delay(500);
 		setSpeed(AVOID_SPEED);
-		camera_turned = 1;
+		cameraTurned = 1;
 		rightTurned = 0;
 		leftTurned = 0;
 	}
 
 	if (lane_cord != CORD_NOT_SET)
 	{
-		turndx = (int)(((2*lane_cord + (AVOID_WIDTH * multiplier * (-1)))/2 - INITIAL_X)/3)>90?90:(int)(((2*lane_cord+(AVOID_WIDTH * multiplier * (-1)))/2 - INITIAL_X)/3);
+		turndx = (int)(((2*lane_cord+450)/2 - INITIAL_X)/1.5)>135?135:(int)(((2*lane_cord+450)/2 - INITIAL_X)/1.5);
 		fineTurn(turndx);
 		pt.x = lane_cord + (AVOID_WIDTH * multiplier * (-1)) / 2;
 	}
@@ -104,8 +149,15 @@ int singleLaneTracking(int direction)
 		else turnRight();
 	}
 
-	if (turndx > 50) rightTurned = 1;
-	if (rightTurned && turndx < -20) leftTurned = 1;
+	if (turndx > 50) {
+		printf("right turned\n");
+		rightTurned = 1;
+	}
+	if (rightTurned && turndx < -15) {
+		printf("left turned\n");
+		leftTurned = 1;
+	}
+	printf("AVOIDANCE TURNDX : %d\n", turndx);
 
 #if RECORD_CAMERA_VISION
 	videoFrameWrite(img);

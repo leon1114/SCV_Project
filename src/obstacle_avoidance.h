@@ -9,5 +9,6 @@
 void laneDeparture(int direction);
 int singleLaneTracking(int direction);
 void laneReturn(int direction);
+void manageObstacle();
 
 #endif

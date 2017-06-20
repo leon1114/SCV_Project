@@ -16,25 +16,25 @@ Mat img;
 
 // setting variables
 Point pt = Point(INITIAL_X, INITIAL_Y-50);
-Mat gray_img;
-Scalar left_val, right_val;
+Mat grayImg;
+Mat binaryImg;
+Scalar leftVal, rightVal;
 int width=450, turndx;
 int isOnCorner;
 int cornerFrameCounter;
-int road_ended;
+int roadEnded;
 
 int laneKeepingControl()
 {
-	int left_lane_cord = CORD_NOT_SET, right_lane_cord = CORD_NOT_SET;
+	int leftLaneCord = CORD_NOT_SET, rightLaneCord = CORD_NOT_SET;
 	volatile int i;
-	pt.y = INITIAL_Y - getSpeed()*0.8;
+	pt.y = INITIAL_Y - getSpeed()*0.6 + 20;
 	img = getFrame().clone();
-	cvtColor(img, gray_img, COLOR_BGR2GRAY);
-	//inRange(gray_img,180,255,gray_img);
-	threshold(gray_img, gray_img, 180,255, THRESH_BINARY|THRESH_OTSU);
+	cvtColor(img, grayImg, COLOR_BGR2GRAY);
+	threshold(grayImg, binaryImg, 150,255, THRESH_BINARY|THRESH_OTSU);
 
 	//Stop line detect && stop
-    if (!isOnCorner && gray_img.at<uchar>(pt.y , pt.x) != 0)
+    if (!isOnCorner && binaryImg.at<uchar>(pt.y - getSpeed() * 0.5 , pt.x) != 0)
     {
     	printf("Stop line detected\n");
     	int prv_spd = getSpeed();
@@ -55,23 +55,23 @@ int laneKeepingControl()
     //Lane detection
 	for (i=1;i<=640;i++)
 	{
-		if (pt.x - i >= 0) left_val = gray_img.at<uchar>(pt.y, pt.x - i);
-		if (pt.x + i <= 640) right_val = gray_img.at<uchar>(pt.y, pt.x + i);
-		if (left_lane_cord == CORD_NOT_SET && left_val.val[0] != 0)
+		if (pt.x - i >= 0) leftVal = binaryImg.at<uchar>(pt.y, pt.x - i);
+		if (pt.x + i <= 640) rightVal = binaryImg.at<uchar>(pt.y, pt.x + i);
+		if (leftLaneCord == CORD_NOT_SET && leftVal.val[0] != 0)
 		{
-			left_lane_cord = pt.x - i;
+			leftLaneCord = pt.x - i;
 		}
-		if (right_lane_cord == CORD_NOT_SET && right_val.val[0] != 0)
+		if (rightLaneCord == CORD_NOT_SET && rightVal.val[0] != 0)
 		{
-			right_lane_cord = pt.x + i;
+			rightLaneCord = pt.x + i;
 		}
-		if(left_lane_cord!=CORD_NOT_SET && right_lane_cord!=CORD_NOT_SET) break;
+		if(leftLaneCord!=CORD_NOT_SET && rightLaneCord!=CORD_NOT_SET) break;
 	}
 
 	//mid-lane track
-	if (left_lane_cord != CORD_NOT_SET && right_lane_cord != CORD_NOT_SET)
+	if (leftLaneCord != CORD_NOT_SET && rightLaneCord != CORD_NOT_SET)
 	{
-		fineTurn((int)((pt.x - INITIAL_X)/6));
+		fineTurn((int)((pt.x - INITIAL_X)/4.0));
 		if (cornerFrameCounter <= 0)
 		{
 			isOnCorner = 0;
@@ -80,55 +80,53 @@ int laneKeepingControl()
 		{
 			cornerFrameCounter--;
 		}
-		width = right_lane_cord - left_lane_cord;
+		//width = right_lane_cord - left_lane_cord;
 	}
 	//turn right
-	else if (left_lane_cord != CORD_NOT_SET)
+	else if (leftLaneCord != CORD_NOT_SET)
 	{
-		turndx = (int)(((2*left_lane_cord+width)/2 - INITIAL_X)/1.5)>135?135:(int)(((2*left_lane_cord+width)/2 - INITIAL_X)/1.5);
+		turndx = (int)(((2*leftLaneCord+width)/2 - INITIAL_X)/2.0)>135?135:(int)(((2*leftLaneCord+width)/2 - INITIAL_X)/2.0);
 		fineTurn(turndx);
-		cornerFrameCounter++;
 		isOnCorner = 1;
-		cornerFrameCounter = 100;
+		cornerFrameCounter = 5;
 	}
 	//turn left
-	else if (right_lane_cord != CORD_NOT_SET)
+	else if (rightLaneCord != CORD_NOT_SET)
 	{
-		turndx = (int)(((2*right_lane_cord-width)/2 - INITIAL_X)/1.5)<-135?-135:(int)(((2*right_lane_cord-width)/2 - INITIAL_X)/1.5);
+		turndx = (int)(((2*rightLaneCord-width)/2 - INITIAL_X)/2.0)<-135?-135:(int)(((2*rightLaneCord-width)/2 - INITIAL_X)/2.0);
 		fineTurn(turndx);
-		cornerFrameCounter++;
 		isOnCorner = 1;
-		cornerFrameCounter = 100;
+		cornerFrameCounter = 5;
 	}
 	//lane end
 	else
 	{
-		road_ended = 1;
+		roadEnded = 1;
 		printf("ended\n");
 	}
 
 	//Draw circles inside of each lane
 #ifdef SHOW_CAMERA_VISION
-	if (left_lane_cord != CORD_NOT_SET) circle(img, Point(left_lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
-	if (right_lane_cord != CORD_NOT_SET) circle(img, Point(right_lane_cord, pt.y), 10, Scalar(0,0,255),-1,8);
+	if (leftLaneCord != CORD_NOT_SET) circle(img, Point(leftLaneCord, pt.y), 10, Scalar(0,0,255),-1,8);
+	if (rightLaneCord != CORD_NOT_SET) circle(img, Point(rightLaneCord, pt.y), 10, Scalar(0,0,255),-1,8);
 	//imshow("test", img);
 #endif
 
 	//Init l-r lane cord
-	if (left_lane_cord == CORD_NOT_SET) left_lane_cord = right_lane_cord - width;
-	if (right_lane_cord == CORD_NOT_SET) right_lane_cord = left_lane_cord + width;
+	if (leftLaneCord == CORD_NOT_SET) leftLaneCord = rightLaneCord - width;
+	if (rightLaneCord == CORD_NOT_SET) rightLaneCord = leftLaneCord + width;
 
 	//Update point x-axis
-	pt.x = (left_lane_cord + right_lane_cord) / 2.0;
+	pt.x = (leftLaneCord + rightLaneCord) / 2.0;
 
 #ifdef RECORD
 	//writer.write(img);
 #endif
 
 	//No lane detected
-	if (road_ended)
+	if (roadEnded)
 	{
-		imshow("test", gray_img);
+		//imshow("test", gray_img);
 		return 1;
 	}
 	return 0;

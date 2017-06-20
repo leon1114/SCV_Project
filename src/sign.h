@@ -22,9 +22,9 @@
 #include "opencv2/xfeatures2d.hpp"
 
 #define NUM 2
-#define minHess 600// 낮을수록 feature 많이 찾음.
+#define minHess 400// 낮을수록 feature 많이 찾음.
 #define thresholdMatchingNN 0.7 // 낮을수록 빡빡하게 맞다고함.
-#define thresholdGoodMatches 5
+#define thresholdGoodMatches 1
 
 using namespace cv;
 using namespace std;

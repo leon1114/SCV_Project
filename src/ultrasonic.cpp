@@ -19,7 +19,7 @@ void *ultrasonicDetection(void * param){
 	int ret;
 	int offset = 0, dir = 5;
 	while(true){
-		if(angle == 0){
+		if(angle == 0 && usflag == 0){
 			offset+=dir;
 			if(offset>=10 || offset<=-10) dir*=-1;
 			seeAngle(angle + offset);
@@ -57,6 +57,7 @@ void usInit() {
 }
 
 int getCM() {
+	int i;
 	//Send trig pulse
 	digitalWrite(TRIG, LOW);
 	delayMicroseconds(2);
@@ -65,10 +66,16 @@ int getCM() {
 	digitalWrite(TRIG, LOW);
 
 	//Wait for echo start
-	while(digitalRead(ECHO) == LOW);
+	for(i=0; i<500000;i++){
+		if(digitalRead(ECHO) != LOW)
+			break;
+	}
 	//Wait for echo end
 	long startTime = micros();
-	while(digitalRead(ECHO) == HIGH);
+	for(i=0; i<500000;i++){
+		if(digitalRead(ECHO) != HIGH)
+			break;
+	}
 	long travelTime = micros() - startTime;
 
 	//Get distance in cm

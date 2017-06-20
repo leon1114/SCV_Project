@@ -5,11 +5,11 @@
 #include "PCA9685.h"
 
 int leftPWM, rightPWM, homePWM;
+int offset = -7;
 static PCA9685 * pwm;
 
 void dirInit()
 {
-	int offset = 0;
 	homePWM = HOMEVAL;
 	homePWM += offset;
 
@@ -25,7 +25,7 @@ void home()
 
 void fineTurn(int dx)
 {
-	pwm->setPWM(CH0,0,HOMEVAL+dx);
+	pwm->setPWM(CH0,0,HOMEVAL+dx+offset);
 }
 
 void dirTest()

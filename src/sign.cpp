@@ -7,8 +7,8 @@ static Mat object[NUM];
 static vector<KeyPoint> kpObject[NUM];
 static Mat desObject[NUM];
 static const string file[NUM] = { "speed35.jpg", "speed100.jpg"};
-//static const string file[NUM] = { "number4.jpg", "number9.jpg"};
-static const int speedArray[] = {35, 100};
+//static const string file[NUM] = { "number5.jpg", "number0.jpg"};
+static const int speedArray[] = {40, 100};
 volatile int fromSignSpd;
 
 int signRecogInit(){

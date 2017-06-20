@@ -50,15 +50,12 @@ void Terminate()
 
 extern volatile int usflag;
 extern volatile int fromSignSpd;
-extern int camera_turned;
-extern int dist;
-extern Point pt;
 extern int angle;
 
 int main(int argc, char *argv[])
 {
 	int ret;
-	Mat cam_img;
+	Mat camImg;
 	pthread_t threadUSId;
 	pthread_t threadSRId;
 	const char *threadUS = "Ultrasonic detection thread";
@@ -92,44 +89,7 @@ int main(int argc, char *argv[])
 			fromSignSpd = 0;
 		}
 
-		if (usflag == 1){
-
-			int prevSpeed = getSpeed();
-
-			printf("Spd when US detected : %d\n", prevSpeed);
-			setSpeed(0);
-
-			if (prevSpeed <= 50){
-
-				printf("On avoidance\n");
-
-				pt.x += 560;
-				delay(200);
-				setSpeed(AVOID_SPEED);
-
-				while (1) {
-					singleLaneTracking(0);
-					if (camera_turned && dist >= 40)
-					{
-						break;
-					}
-					waitKey(20);
-				}
-				laneReturn(0);
-			}
-			else {
-				while(usflag)
-				{
-#if RECORD_CAMERA_VISION
-					cam_img = getFrame().clone();
-					videoFrameWrite(cam_img);
-					waitKey(20);
-#endif
-				};
-				setSpeed(prevSpeed);
-			}
-		}
-
+		if (usflag == 1) manageObstacle();
 		if(cv::waitKey(20) == ESC_KEY) break;
 	}
 
@@ -137,7 +97,9 @@ int main(int argc, char *argv[])
 	printf("Terminate\n");
 	Terminate();
 	pthread_cancel(threadSRId);
+	printf("SR THREAD CANCELED\n");
 	pthread_cancel(threadUSId);
+	printf("US THREAD CANCELED\n");
 
 	waitKey(0);
 	return 0;
